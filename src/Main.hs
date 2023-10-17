@@ -1,15 +1,16 @@
 module Main(main) where
 
-import Graphics.Gloss
+import View
+import Model
+import Controller
 
-window :: Display
-window = InWindow "Nice Window" (200, 200) (10, 10)
+import Graphics.Gloss.Interface.IO.Game
 
-background :: Color
-background = white
-
-drawing :: Picture
-drawing = circle 80
-
-main :: IO ()
-main = display window background drawing
+main :: IO()
+main = playIO   (InWindow "Astroids without a twist" (800, 500) (0, 0))
+                black
+                10
+                initialState
+                view
+                input
+                step
