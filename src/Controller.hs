@@ -11,7 +11,9 @@ import Graphics.Gloss.Interface.IO.Game
 
 -- | Handle one iteration of the game
 step :: Float -> GameState -> IO GameState
-step secs gstate = return $ gstate { elapsedTime = elapsedTime gstate + secs }
+step secs gstate = do
+    print (getBullets $ world gstate)
+    return $ gstate { world = checkDeleteBullet (world gstate) $ elapsedTime gstate, elapsedTime = elapsedTime gstate + secs }
 
 -- | Handle user input
 input :: Event -> GameState -> IO GameState
@@ -37,29 +39,28 @@ fireBullet gstate = gstate { world = addBullet (world gstate) bullet}
 -- This function returns the world with an updated angle in which the moveForward function will move
 rotateShip :: GameState -> Int -> World
 rotateShip gstate speed = Play (
-    Player 
-        pos 
-        vel 
-        acc 
+    Player
+        pos
+        vel
+        acc
         (dirAngle + fromIntegral speed)
     )
     bullets
-        where   
+        where
             dirAngle = giveDir (world gstate)
             vel = giveVelocity (world gstate)
             acc@(accX, accY) = giveAcceleration (world gstate)
             pos@(posX, posY) = givePIS (world gstate)
             bullets = getBullets $ world gstate
-
 -- This function adds the direction to the current position, moving it to the front of which the ship is looking
 moveForward :: GameState -> World
 moveForward gstate = Play (
-        Player 
-            (posX + dirX*vel, posY + dirY*vel) 
+        Player
+            (posX + dirX*vel, posY + dirY*vel)
             vel
             acc
             dirAngleDeg
-        )     
+        )
         bullets
         where
             pos@(posX, posY) = givePIS $ world gstate

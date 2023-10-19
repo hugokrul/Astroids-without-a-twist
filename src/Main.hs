@@ -9,7 +9,7 @@ import Graphics.Gloss.Interface.IO.Game
 main :: IO()
 main = playIO   (InWindow "Astroids without a twist" (800, 500) (0, 0))
                 black
-                10
+                60
                 initialState
                 view
                 input

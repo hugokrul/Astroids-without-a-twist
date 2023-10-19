@@ -20,4 +20,13 @@ getBullets :: World -> [Bullet]
 getBullets (Play _ bullets) = bullets
 
 addBullet :: World -> Bullet -> World
-addBullet (Play player bulletList) bullet = Play player ([bullet] ++ bulletList)
+addBullet (Play player bulletList) bullet = Play player (bullet : bulletList)
+
+getBulletTime :: Bullet -> Float
+getBulletTime (Bullet _ _ _ t) = t
+
+checkDeleteBullet :: World -> Float -> World
+checkDeleteBullet (Play p []) time = Play p []
+checkDeleteBullet (Play p list@(bullet:rest)) time
+    | (time - getBulletTime bullet) >= 3 = Play p rest
+    | otherwise = Play p list
