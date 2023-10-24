@@ -10,18 +10,31 @@ import Astroid
 
 import Imports
 
+import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
+
 
 -- | Handle one iteration of the game
 step :: Float -> GameState -> IO GameState
 step secs gstate = case playPauseGameOver gstate of
-    Play -> do return $ gstate { elapsedTime = elapsedTime gstate + secs }
+    Play -> 
+        do 
+            print $ bullets gstate
+            return $ checkGameOver $ stepGameState secs gstate
     Pause -> return gstate
     GameOver -> return gstate
+
+checkGameOver :: GameState -> GameState
+checkGameOver gstate
+    | (lives $ player gstate) == 0 = gstate {playPauseGameOver=GameOver}
+    | otherwise = gstate
 
 stepGameState :: Float -> GameState -> GameState
 stepGameState time gstate = gstate
                     {
-                        player = stepPlayerState (player gstate) time
+                        player = checkDeleteShip $ stepPlayerState (player gstate) time,
+                        bullets = stepBulletsState (bullets gstate) time,
+                        astroids = stepAstroidsState (astroids gstate) time,
+                        elapsedTime = elapsedTime gstate + time 
                     }
     
 
@@ -30,7 +43,7 @@ input :: Event -> GameState -> IO GameState
 input e gstate = return (inputKey e gstate)
 
 inputKey :: Event -> GameState -> GameState
-inputKey (EventKey (SpecialKey KeyUp) Down _ _) gstate = gstate { player = (player gstate) { positionPlayer = moveForward $ player gstate } }
+inputKey (EventKey (SpecialKey KeyUp) Down _ _) gstate = gstate { player = moveForward (player gstate) (elapsedTime gstate)}
 -- inputKey (EventKey (SpecialKey KeyRight) Down _ _) gstate = gstate { player =  (player gstate) { directionPlayer = rotateShip gstate 10} }
 -- inputKey (EventKey (SpecialKey KeyLeft) Down _ _) gstate = gstate { player =  (player gstate) { directionPlayer = rotateShip gstate (-10)}  }
 inputKey (EventKey (SpecialKey KeyEsc) Down _ _) gstate = initialState
@@ -40,8 +53,8 @@ inputKey _ gstate = gstate -- Otherwise keep the same
 fireBullet :: GameState -> GameState
 fireBullet gstate = gstate { bullets = bullet : bullets gstate}
     where
-        bullet = Bullet position (200, 0) lifespan
+        bullet = Bullet position (20 PMath.* vel)
         position = positionPlayer $ player gstate
-        lifespan = elapsedTime gstate
+        vel = velocityPlayer $ player gstate
 
 

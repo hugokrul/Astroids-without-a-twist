@@ -18,21 +18,20 @@ data State = Play | Pause | GameOver
 data Player   = Player    {
                            positionPlayer :: PointInSpace,
                            velocityPlayer :: Velocity,
-                           accelarationPlayer :: Acceleration
+                           accelarationPlayer :: Acceleration,
+                           lives :: Float
                           }
                             deriving (Show)
 
 data Bullet   = Bullet    {
                             positionBullet :: PointInSpace,
-                            velocityBullet :: Velocity,
-                            lifeSpanBullet :: LifeSpan
+                            velocityBullet :: Velocity
                           }
                             deriving (Show)
 
 data Astroid  = Astroid   {
                             positionAstroid :: PointInSpace,
                             velocityAstroid :: Velocity,
-                            lifeSpanAstroid :: LifeSpan,
                             sizeAstroid :: Size
                           }
                             deriving (Show)
@@ -49,7 +48,10 @@ data Size = Big | Medium | Small
   deriving (Show)
 
 initialStatePlayer :: Player
-initialStatePlayer = Player {positionPlayer=(0, 0), velocityPlayer=(0, 10), accelarationPlayer=(0, 0)}
+initialStatePlayer = Player {positionPlayer=(0, 0), velocityPlayer=(0, 10), accelarationPlayer=(0, 0), lives=3}
+
+initialAstroid :: Astroid
+initialAstroid = Astroid {positionAstroid = (0, 0), velocityAstroid = (20, 20), sizeAstroid = Big}
 
 initialState :: GameState
-initialState = GameState { player=initialStatePlayer, bullets=[], astroids=[], elapsedTime = 0, playPauseGameOver=Play}
+initialState = GameState { player=initialStatePlayer, bullets=[], astroids=[initialAstroid], elapsedTime = 0, playPauseGameOver=Play}

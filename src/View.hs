@@ -17,16 +17,18 @@ view = return . viewPure
 viewPure :: GameState -> Picture
 viewPure gstate = case playPauseGameOver gstate of 
     Play        -> pictures [
-                            getPictures gstate
-                        ]
+                                getPictures gstate,
+                                color white $ translate (-400) 200 $ scale 0.5 0.25 $ text $ show $ lives $ player gstate
+                            ]
     Pause       -> pictures [color white $ translate (-400) 200 $ scale 0.5 0.25 $ text "pausing"]
     GameOver    -> Pictures [color white $ translate (-400) 200 $ scale 0.5 0.25 $ text "Game Over"]
     
 
 getPictures :: GameState -> Picture
 getPictures gstate = pictures (
-    map showBullet (bullets gstate) ++ 
-    [uncurry translate (positionPlayer (player gstate)) ship]
+        map showBullet (bullets gstate) ++ 
+        map showAstroid (astroids gstate) ++
+        [uncurry translate (positionPlayer (player gstate)) ship]
     )
 
 getTime :: GameState -> Float

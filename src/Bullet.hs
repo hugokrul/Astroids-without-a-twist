@@ -1,7 +1,9 @@
 module Bullet where
 
 import Model
+
 import Graphics.Gloss
+import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
 
 bullet :: Picture
 bullet = color white $ ThickCircle 1 2
@@ -9,7 +11,29 @@ bullet = color white $ ThickCircle 1 2
 showBullet :: Bullet -> Picture
 showBullet b = uncurry translate (positionBullet b) bullet
 
-    --uncurry translate (positionPlayer (player gstate)) $ rotate (directionPlayer (player gstate)) ship,
+stepBulletsState :: [Bullet] -> Float -> [Bullet]
+stepBulletsState [] _ = []
+stepBulletsState (x:xs) time 
+    | checkDeleteBullet x = stepBulletsState xs time
+    | otherwise = calculateNextPosition x time : stepBulletsState xs time
+
+checkDeleteBullet :: Bullet -> Bool
+checkDeleteBullet bullet
+    | x < -400 || x > 400 || y > 250 || y < -250 = True
+    | otherwise = False
+    where
+        x = fst $ positionBullet bullet
+        y = snd $ positionBullet bullet
+
+calculateNextPosition :: Bullet -> Float -> Bullet
+calculateNextPosition bullet time = bullet {positionBullet = newPos}
+    where 
+        pos = positionBullet bullet
+        vel = velocityBullet bullet
+        newPos = pos PMath.+ (time PMath.* vel)
+
+
+--uncurry translate (positionPlayer (player gstate)) $ rotate (directionPlayer (player gstate)) ship,
 
 -- mkBullet :: Bullet -> Float -> Picture
 -- mkBullet bullet@(Bullet (x,y) v d t) time = translate posx posy $ color white $ ThickCircle 1 2

@@ -1,68 +1,61 @@
 module Astroid where
 
--- import Graphics.Gloss
--- import Model
+import Graphics.Gloss
+import Model
+import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
 
--- bigAstroid :: Picture
--- bigAstroid = scale 2 2 $ color white $ polygon [(17, 0), (33, -6), (32, -22), (23, -32), (12, -26), (0, -24), (2, -13), (1, -5), (7, 0)]
 
--- mediumAstroid :: Picture
--- mediumAstroid = color white $ polygon [(17, 0), (33, -6), (32, -22), (23, -32), (12, -26), (0, -24), (2, -13), (1, -5), (7, 0)]
+bigAstroid :: Picture
+bigAstroid = scale 2 2 $ color white $ polygon [(17, 0), (33, -6), (32, -22), (23, -32), (12, -26), (0, -24), (2, -13), (1, -5), (7, 0)]
 
--- smallAstroid :: Picture
--- smallAstroid = scale 0.5 0.5 $ color white $ polygon [(17, 0), (33, -6), (32, -22), (23, -32), (12, -26), (0, -24), (2, -13), (1, -5), (7, 0)]
+mediumAstroid :: Picture
+mediumAstroid = color white $ polygon [(17, 0), (33, -6), (32, -22), (23, -32), (12, -26), (0, -24), (2, -13), (1, -5), (7, 0)]
 
--- bigAstroidHitBox :: [Point]
--- -- topleft, topright, bottomright, bottomleft
--- bigAstroidHitBox = [(0, 0), (66, 0), (66, -64), (0, -64)]
+smallAstroid :: Picture
+smallAstroid = scale 0.5 0.5 $ color white $ polygon [(17, 0), (33, -6), (32, -22), (23, -32), (12, -26), (0, -24), (2, -13), (1, -5), (7, 0)]
 
--- mediumAstroidHitBox :: [Point]
--- -- topleft, topright, bottomright, bottomleft
--- mediumAstroidHitBox = [(0, 0), (33, 0), (33, -32), (0, -32)]
+bigAstroidHitBox :: Astroid -> [Point]
+-- topleft, topright, bottomright, bottomleft
+bigAstroidHitBox a = [pos, (x+66, y), (x+66, y-64), (x, y-64)]
+    where
+        pos@(x, y) = positionAstroid a
 
--- smallAstroidHitBox :: [Point]
--- -- topleft, topright, bottomright, bottomleft
--- smallAstroidHitBox = [(0, 0), (16.5, 0), (16.5, -16), (0, -16)]
+mediumAstroidHitBox :: Astroid -> [Point]
+-- topleft, topright, bottomright, bottomleft
+mediumAstroidHitBox a = [pos, (x+33, y), (x+33, y-32), (x, y-32)]
+    where
+        pos@(x, y) = positionAstroid a
 
--- mkAStroid :: Astroid -> Float -> Picture
--- mkAStroid astroid@(Astroid (x, y) v d t s) time = case s of
---     Big -> translate posx posy bigAstroid
---     Medium -> translate posx posy mediumAstroid
---     Small -> translate posx posy smallAstroid
---     where
---         posx = x + dirx*v*(time-t)
---         posy = y + diry*v*(time-t)
---         (dirx, diry) = (sin dirAngleRad, cos dirAngleRad)
---         dirAngleRad = d*(pi/180)
+smallAstroidHitBox :: Astroid -> [Point]
+-- topleft, topright, bottomright, bottomleft
+smallAstroidHitBox a = [pos, (x+16.5, y), (x+16.5, y-16), (x, y-16)]
+    where
+        pos@(x, y) = positionAstroid a
 
--- getAstroids :: World -> [Astroid]
--- getAstroids w = case w of
---     (Play _ _ astroids) -> astroids
---     _ -> []
 
--- astroidPos :: World -> (Float, Float)
--- astroidPos w = case w of
---     (Play _ _ ((Astroid pos _ _ _ _):_)) -> pos
---     _ -> (-10000, -100000)
+showAstroid :: Astroid -> Picture
+showAstroid a = case sizeAstroid a of 
+    Big -> uncurry translate (positionAstroid a) bigAstroid
+    Medium -> uncurry translate (positionAstroid a) mediumAstroid
+    Small -> uncurry translate (positionAstroid a) smallAstroid
 
--- getAstroidsPicture :: World -> Float -> [Picture]
--- getAstroidsPicture w time = case w of
---     (Play _ _ []) -> []
--- getAstroidsPicture (Play p b (astroid:rest)) time = mkAStroid astroid time : getAstroidsPicture (Play p b rest) time
+stepAstroidsState :: [Astroid] -> Float -> [Astroid]
+stepAstroidsState [] _ = []
+stepAstroidsState (x:xs) time 
+    | checkDeleteAstroid x = stepAstroidsState xs time
+    | otherwise = calculateNextPositionAstroids x time : stepAstroidsState xs time
 
--- -- checkDeleteAstroid :: World -> World
--- -- checkDeleteAstroid (Play p b []) = Play p b []
--- -- checkDeleteAstroid (Play p b astroids@((Astroid pos@(x, y) vel dir life size):rest))
--- --     = case size of 
--- --         Big ->  | 
--- --                 | otherwise = Play p b astroids
--- --         Medium ->
--- --         Small ->
+checkDeleteAstroid :: Astroid -> Bool
+checkDeleteAstroid a
+    | x < -400 || x > 400 || y > 250 || y < -250 = True
+    | otherwise = False
+    where
+        x = fst $ positionAstroid a
+        y = snd $ positionAstroid a
 
--- {-
--- checkDeleteBullet :: World -> Float -> World
--- checkDeleteBullet (Play p [] a) time = Play p [] a
--- checkDeleteBullet (Play p list@(bullet:rest) a) time
---     | (time - getBulletTime bullet) >= 3 = Play p rest a
---     | otherwise = Play p list a
--- -}
+calculateNextPositionAstroids :: Astroid -> Float -> Astroid
+calculateNextPositionAstroids a time = a {positionAstroid = newPos}
+    where 
+        pos = positionAstroid a
+        vel = velocityAstroid a
+        newPos = pos PMath.+ (time PMath.* vel)
