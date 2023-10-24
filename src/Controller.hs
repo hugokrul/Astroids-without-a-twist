@@ -30,9 +30,9 @@ input :: Event -> GameState -> IO GameState
 input e gstate = return (inputKey e gstate)
 
 inputKey :: Event -> GameState -> GameState
-inputKey (EventKey (SpecialKey KeyUp) Down _ _) gstate = gstate { player = (player gstate) { positionPlayer = moveForward gstate } }
-inputKey (EventKey (SpecialKey KeyRight) Down _ _) gstate = gstate { player =  (player gstate) { directionPlayer = rotateShip gstate 10} }
-inputKey (EventKey (SpecialKey KeyLeft) Down _ _) gstate = gstate { player =  (player gstate) { directionPlayer = rotateShip gstate (-10)}  }
+inputKey (EventKey (SpecialKey KeyUp) Down _ _) gstate = gstate { player = (player gstate) { positionPlayer = moveForward $ player gstate } }
+-- inputKey (EventKey (SpecialKey KeyRight) Down _ _) gstate = gstate { player =  (player gstate) { directionPlayer = rotateShip gstate 10} }
+-- inputKey (EventKey (SpecialKey KeyLeft) Down _ _) gstate = gstate { player =  (player gstate) { directionPlayer = rotateShip gstate (-10)}  }
 inputKey (EventKey (SpecialKey KeyEsc) Down _ _) gstate = initialState
 inputKey (EventKey (SpecialKey KeySpace) Down _ _) gstate = fireBullet gstate
 inputKey _ gstate = gstate -- Otherwise keep the same
@@ -44,10 +44,4 @@ fireBullet gstate = gstate { bullets = bullet : bullets gstate}
         position = positionPlayer $ player gstate
         lifespan = elapsedTime gstate
 
--- This function returns the world with an updated angle in which the moveForward function will move
-rotateShip :: GameState -> Float -> Direction
-rotateShip gstate speed = newDir
-        where
-            oldDir = directionPlayer (player gstate)
-            newDir = oldDir + speed
 
