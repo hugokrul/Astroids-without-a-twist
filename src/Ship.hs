@@ -29,10 +29,7 @@ checkDeleteShip player
         y = snd $ positionPlayer player
 
 stepPlayerState :: Player -> Float -> Player
-stepPlayerState player time = player 
-                                {
-                                    positionPlayer = moveForward player
-                                }
+stepPlayerState player time = player
 
 rotateShip :: Player -> Float -> Vector
 rotateShip player speed = newVel

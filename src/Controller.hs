@@ -43,7 +43,7 @@ input :: Event -> GameState -> IO GameState
 input e gstate = return (inputKey e gstate)
 
 inputKey :: Event -> GameState -> GameState
-inputKey (EventKey (SpecialKey KeyUp) Down _ _) gstate = gstate { player = (player gstate) { positionPlayer = moveForward $ player gstate } }
+inputKey (EventKey (SpecialKey KeyUp) Down _ _) gstate = gstate { player = moveForward (player gstate) (elapsedTime gstate)}
 inputKey (EventKey (SpecialKey KeyRight) Down _ _) gstate = gstate { player =  (player gstate) { velocityPlayer = rotateShip (player gstate) 10} }
 inputKey (EventKey (SpecialKey KeyLeft) Down _ _) gstate = gstate { player =  (player gstate) { velocityPlayer = rotateShip (player gstate) (-10)}  }
 inputKey (EventKey (SpecialKey KeyEsc) Down _ _) gstate = initialState

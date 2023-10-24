@@ -2,6 +2,7 @@ module Astroid where
 
 import Graphics.Gloss
 import Model
+import Imports
 import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
 
 
@@ -35,9 +36,12 @@ smallAstroidHitBox a = [pos, (x+16.5, y), (x+16.5, y-16), (x, y-16)]
 
 showAstroid :: Astroid -> Picture
 showAstroid a = case sizeAstroid a of 
-    Big -> uncurry translate (positionAstroid a) bigAstroid
-    Medium -> uncurry translate (positionAstroid a) mediumAstroid
-    Small -> uncurry translate (positionAstroid a) smallAstroid
+    Big -> pictures [uncurry translate (positionAstroid a) $ rotate deg bigAstroid]
+    Medium -> uncurry translate (positionAstroid a) $ rotate deg mediumAstroid
+    Small -> uncurry translate (positionAstroid a)$ rotate deg smallAstroid
+    where
+        (x,y) = velocityAstroid a
+        deg = radToDeg (argV(y,x))
 
 stepAstroidsState :: [Astroid] -> Float -> [Astroid]
 stepAstroidsState [] _ = []

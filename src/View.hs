@@ -30,10 +30,10 @@ getPictures :: GameState -> Picture
 getPictures gstate = pictures (
         map showBullet (bullets gstate) ++ 
         map showAstroid (astroids gstate) ++
-        [uncurry translate (positionPlayer (player gstate)) ship]
+        [uncurry translate (positionPlayer (player gstate)) $ rotate deg ship]
     )
     where
-        vel@(x,y) = velocityPlayer (player gstate)
+        (x,y) = velocityPlayer (player gstate)
         deg = radToDeg (argV(y,x))
 
 
