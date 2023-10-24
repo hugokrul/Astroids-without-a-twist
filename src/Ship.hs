@@ -27,17 +27,14 @@ checkDeleteShip gstate
 stepPlayerState :: Player -> Float -> Player
 stepPlayerState player time = player 
                                 {
-                                    positionPlayer = 
+                                    positionPlayer = moveForward player
                                 }
 
 
 -- This function adds the direction to the current position, moving it to the front of which the ship is looking
-moveForward :: GameState -> PointInSpace
-moveForward gstate = newPos
+moveForward :: Player -> Point
+moveForward player = newPos
         where
-            (x, y) = positionPlayer (player gstate)
-            vel = velocityPlayer (player gstate)
-            dirAngleDeg = directionPlayer (player gstate)
-            dirAngleRad = dirAngleDeg*(pi/180)
-            (dirX, dirY) = (sin dirAngleRad, cos dirAngleRad)
-            newPos = positionPlayer mapPlus
+            -- pos = positionPlayer player
+            -- vel = velocityPlayer player
+            newPos = mapPlus positionPlayer velocityPlayer player

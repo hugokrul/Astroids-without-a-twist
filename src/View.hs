@@ -26,7 +26,7 @@ viewPure gstate = case playPauseGameOver gstate of
 getPictures :: GameState -> Picture
 getPictures gstate = pictures (
     map showBullet (bullets gstate) ++ 
-    [uncurry translate (positionPlayer (player gstate)) $ rotate (directionPlayer (player gstate)) ship]
+    [uncurry translate (positionPlayer (player gstate)) ship]
     )
 
 getTime :: GameState -> Float
