@@ -5,6 +5,8 @@
 module View where
 
 import Graphics.Gloss
+import Graphics.Gloss.Data.Vector
+import Graphics.Gloss.Geometry.Angle
 import Model
 import Ship
 import Bullet
@@ -30,6 +32,10 @@ getPictures gstate = pictures (
         map showAstroid (astroids gstate) ++
         [uncurry translate (positionPlayer (player gstate)) ship]
     )
+    where
+        vel@(x,y) = velocityPlayer (player gstate)
+        deg = radToDeg (argV(y,x))
+
 
 getTime :: GameState -> Float
 getTime = elapsedTime
