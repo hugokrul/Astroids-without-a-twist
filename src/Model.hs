@@ -2,23 +2,43 @@
 --   which represent the state of the game
 module Model where
 
+import System.Random
+
 data GameState = GameState {
-                    world :: World,
-                    elapsedTime :: Float
+                    player :: Player,
+                    astroids :: [Astroid],
+                    bullets :: [Bullet],
+                    elapsedTime :: Float,
+                    playPauseGameOver :: State
                   }
 
-data World = Play  Player [Bullet]
-           | Pause Player
-           | GameOver
-                    deriving (Show)
+data State = Play | Pause | GameOver
 
-data Player = Player PointInSpace Velocity Acceleration Direction
-  deriving (Show)
+data Player   = Player    {
+                           positionPlayer :: PointInSpace,
+                           velocityPlayer :: Velocity,
+                           accelarationPlayer :: Acceleration,
+                           directionPlayer :: Direction
+                          }
+                            deriving (Show)
 
-data Bullet = Bullet PointInSpace Velocity Direction LifeSpan
-  deriving (Show)
+data Bullet   = Bullet    {
+                            positionBullet :: PointInSpace,
+                            velocityBullet :: Velocity,
+                            directionBullet :: Direction,
+                            lifeSpanBullet :: LifeSpan
+                          }
+                            deriving (Show)
 
--- Number
+data Astroid  = Astroid   {
+                            positionAstroid :: PointInSpace,
+                            velocityAstroid :: Velocity,
+                            directionAstroid :: Direction,
+                            lifeSpanAstroid :: LifeSpan,
+                            sizeAstroid :: Size
+                          }
+                            deriving (Show)
+
 type Velocity     = Float
 
 -- Degrees
@@ -31,8 +51,13 @@ type Acceleration = (Float, Float)
 -- (x, y)
 type PointInSpace = (Float, Float)
 
+data Size = Big | Medium | Small
+  deriving (Show)
+
+get = mkStdGen 2023
+
 initialStatePlayer :: Player
-initialStatePlayer = Player (0, 0) 10 (0, 0) 0
+initialStatePlayer = Player {positionPlayer=(0, 0), velocityPlayer=10, accelarationPlayer=(0, 0), directionPlayer=0}
 
 initialState :: GameState
-initialState = GameState { world = Play initialStatePlayer [], elapsedTime = 0}
+initialState = GameState { player=initialStatePlayer, bullets=[], astroids=[Astroid (0, 0) 10 100 0 Big], elapsedTime = 0, playPauseGameOver=Play}

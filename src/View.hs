@@ -8,6 +8,7 @@ import Graphics.Gloss
 import Model
 import Ship
 import Bullet
+import Astroid
 import GHC.Float (showFloat)
 
 view :: GameState -> IO Picture
@@ -18,16 +19,16 @@ truncate' x n = fromIntegral (floor (x * t)) / t
     where t = 10^n
 
 viewPure :: GameState -> Picture
-viewPure gstate = pictures [
-        getPictures (world gstate) gstate,
-        color white $ translate (-400) 200 $ scale 0.5 0.25 $ text $ show $ truncate' (getTime gstate) 1
-    ]
+viewPure gstate = case playPauseGameOver gstate of 
+    Play        -> pictures [
+                            getPictures gstate
+                        ]
+    Pause       -> pictures [color white $ translate (-400) 200 $ scale 0.5 0.25 $ text "pausing"]
+    GameOver    -> Pictures [color white $ translate (-400) 200 $ scale 0.5 0.25 $ text "Game Over"]
+    
 
-getPictures :: World -> GameState -> Picture
-getPictures world@(Play (Player p v a d) bullets) gstate = pictures (
-    [uncurry translate p $ rotate d ship] ++ 
-    getBulletsPicture world (getTime gstate)
-    )
+getPictures :: GameState -> Picture
+getPictures gstate = pictures [uncurry translate (positionPlayer (player gstate)) $ rotate (directionPlayer (player gstate)) ship]
 
 getTime :: GameState -> Float
 getTime = elapsedTime
