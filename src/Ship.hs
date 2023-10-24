@@ -1,7 +1,7 @@
 module Ship where
 
-import Graphics.Gloss
 import Model
+import Imports
 
 
 ship :: Picture
@@ -23,3 +23,18 @@ checkDeleteShip gstate
     where 
         x = fst $ positionPlayer $ player gstate
         y = snd $ positionPlayer $ player gstate
+
+stepPlayerState :: Player -> Float -> Player
+stepPlayerState player time = player 
+                                {
+                                    positionPlayer = moveForward player
+                                }
+
+
+-- This function adds the direction to the current position, moving it to the front of which the ship is looking
+moveForward :: Player -> Point
+moveForward player = newPos
+        where
+            -- pos = positionPlayer player
+            -- vel = velocityPlayer player
+            newPos = mapPlus positionPlayer velocityPlayer player

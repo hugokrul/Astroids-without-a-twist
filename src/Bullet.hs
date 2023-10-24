@@ -3,6 +3,14 @@ module Bullet where
 import Model
 import Graphics.Gloss
 
+bullet :: Picture
+bullet = color white $ ThickCircle 1 2
+
+showBullet :: Bullet -> Picture
+showBullet b = uncurry translate (positionBullet b) bullet
+
+    --uncurry translate (positionPlayer (player gstate)) $ rotate (directionPlayer (player gstate)) ship,
+
 -- mkBullet :: Bullet -> Float -> Picture
 -- mkBullet bullet@(Bullet (x,y) v d t) time = translate posx posy $ color white $ ThickCircle 1 2
 --     where

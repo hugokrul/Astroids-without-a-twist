@@ -14,10 +14,6 @@ import GHC.Float (showFloat)
 view :: GameState -> IO Picture
 view = return . viewPure
 
-truncate' :: Float -> Int -> Float
-truncate' x n = fromIntegral (floor (x * t)) / t
-    where t = 10^n
-
 viewPure :: GameState -> Picture
 viewPure gstate = case playPauseGameOver gstate of 
     Play        -> pictures [
@@ -28,7 +24,10 @@ viewPure gstate = case playPauseGameOver gstate of
     
 
 getPictures :: GameState -> Picture
-getPictures gstate = pictures [uncurry translate (positionPlayer (player gstate)) $ rotate (directionPlayer (player gstate)) ship]
+getPictures gstate = pictures (
+    map showBullet (bullets gstate) ++ 
+    [uncurry translate (positionPlayer (player gstate)) ship]
+    )
 
 getTime :: GameState -> Float
 getTime = elapsedTime
