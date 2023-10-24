@@ -17,9 +17,8 @@ import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
 step :: Float -> GameState -> IO GameState
 step secs gstate = case playPauseGameOver gstate of
     Play -> 
-        do 
-            print $ bullets gstate
-            return $ checkGameOver $ stepGameState secs gstate
+        do
+            return $ checkCollission $ checkAstroidShot $ checkGameOver $ stepGameState secs gstate
     Pause -> return gstate
     GameOver -> return gstate
 
@@ -46,6 +45,7 @@ inputKey :: Event -> GameState -> GameState
 inputKey (EventKey (SpecialKey KeyUp) Down _ _) gstate = gstate { player = moveForward (player gstate) (elapsedTime gstate)}
 inputKey (EventKey (SpecialKey KeyRight) Down _ _) gstate = gstate { player =  (player gstate) { velocityPlayer = rotateShip (player gstate) 10} }
 inputKey (EventKey (SpecialKey KeyLeft) Down _ _) gstate = gstate { player =  (player gstate) { velocityPlayer = rotateShip (player gstate) (-10)}  }
+inputKey (EventKey (Char p) Down _ _) gstate = gstate { playPauseGameOver = Pause }
 inputKey (EventKey (SpecialKey KeyEsc) Down _ _) gstate = initialState
 inputKey (EventKey (SpecialKey KeySpace) Down _ _) gstate = fireBullet gstate
 inputKey _ gstate = gstate -- Otherwise keep the same

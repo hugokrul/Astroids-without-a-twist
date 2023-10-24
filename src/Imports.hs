@@ -2,13 +2,19 @@ module Imports (
     module Graphics.Gloss,
     module Graphics.Gloss.Interface.IO.Game,
     module Graphics.Gloss.Data.Vector,
-    module Graphics.Gloss.Geometry.Angle
+    module Graphics.Gloss.Geometry.Angle,
+    module Graphics.Gloss.Data.Point,
+    module Data.Maybe,
+    module Data.List
     ) where
 
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 import Graphics.Gloss.Data.Vector
 import Graphics.Gloss.Geometry.Angle
+import Graphics.Gloss.Data.Point
+import Data.Maybe
+import Data.List
 import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
 
 mapPlus :: (a -> Point) -> (a -> Point) -> a -> Point

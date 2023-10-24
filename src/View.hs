@@ -22,7 +22,10 @@ viewPure gstate = case playPauseGameOver gstate of
                                 getPictures gstate,
                                 color white $ translate (-400) 200 $ scale 0.5 0.25 $ text $ show $ lives $ player gstate
                             ]
-    Pause       -> pictures [color white $ translate (-400) 200 $ scale 0.5 0.25 $ text "pausing"]
+    Pause       -> pictures [
+                                getPictures gstate,
+                                color white $ translate (-400) 200 $ scale 0.5 0.25 $ text $ show $ lives $ player gstate
+                            ]
     GameOver    -> Pictures [color white $ translate (-400) 200 $ scale 0.5 0.25 $ text "Game Over"]
     
 

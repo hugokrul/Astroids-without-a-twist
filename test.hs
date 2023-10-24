@@ -1,3 +1,9 @@
-import System.Random
+import Data.Maybe
 
-main = return $ randomRIO (0,360)
+deleteMaybes [] = []
+deleteMaybes [x] 
+    | isJust x = [fromJust x] 
+    | otherwise = []
+deleteMaybes (x:xs) 
+    | isJust x = fromJust x : deleteMaybes xs 
+    | otherwise = deleteMaybes xs
