@@ -5,6 +5,8 @@
 module View where
 
 import Graphics.Gloss
+import Graphics.Gloss.Data.Vector
+import Graphics.Gloss.Geometry.Angle
 import Model
 import Ship
 import Bullet
@@ -26,8 +28,12 @@ viewPure gstate = case playPauseGameOver gstate of
 getPictures :: GameState -> Picture
 getPictures gstate = pictures (
     map showBullet (bullets gstate) ++ 
-    [uncurry translate (positionPlayer (player gstate)) ship]
+    [uncurry translate (positionPlayer (player gstate)) $ rotate (deg) ship]
     )
+    where
+        vel@(x,y) = velocityPlayer (player gstate)
+        deg = radToDeg (argV(y,x))
+
 
 getTime :: GameState -> Float
 getTime = elapsedTime

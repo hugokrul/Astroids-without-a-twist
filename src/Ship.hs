@@ -1,5 +1,7 @@
 module Ship where
 
+import Graphics.Gloss.Data.Vector
+import Graphics.Gloss.Geometry.Angle
 import Model
 import Imports
 
@@ -30,6 +32,12 @@ stepPlayerState player time = player
                                     positionPlayer = moveForward player
                                 }
 
+rotateShip :: Player -> Float -> Vector
+rotateShip player speed = newVel
+        where
+            pos = positionPlayer player
+            vel = velocityPlayer player
+            newVel = rotateV (-(degToRad speed)) vel 
 
 -- This function adds the direction to the current position, moving it to the front of which the ship is looking
 moveForward :: Player -> Point
