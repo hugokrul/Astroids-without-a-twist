@@ -46,10 +46,10 @@ calculateNextPositionAstroids a time = a {positionAstroid = newPos}
         vel = velocityAstroid a
         newPos = pos PMath.+ (time PMath.* vel)
 
-bulletInAstroidList :: Bullet -> [Astroid] -> [Maybe Astroid]
+bulletInAstroidList :: Bullet -> [Astroid] -> [Maybe (Bullet, Astroid)]
 bulletInAstroidList b [] = [Nothing]
 bulletInAstroidList b (x:xs)
-    | bulletInAstroid b x = Just x : bulletInAstroidList b xs
+    | bulletInAstroid b x = Just (b, x) : bulletInAstroidList b xs
     | otherwise = bulletInAstroidList b xs
 
 bulletInAstroid :: Bullet -> Astroid -> Bool
@@ -60,7 +60,7 @@ bulletInAstroid b a = pointInBox p0 p1 p2
         p2 = (ax, ay)
         (ax, ay) = positionAstroid a
 
-deleteMaybes :: [Maybe Astroid] -> [Astroid]
+deleteMaybes :: [Maybe (Bullet, Astroid)] -> [(Bullet, Astroid)]
 deleteMaybes [] = []
 deleteMaybes [x]
     | isJust x = [fromJust x]
@@ -72,9 +72,17 @@ deleteMaybes (x:xs)
 checkAstroidShot :: GameState -> GameState
 checkAstroidShot gstate 
     | null $ bullets gstate = gstate
-    | otherwise = gstate { astroids = (astroids gstate \\ (deleteMaybes (checkAstroidsShot' (bullets gstate) (astroids gstate)))) }
+    | otherwise = gstate { 
+                            bullets = bullets gstate \\ map fst sureList ,
+                            astroids = astroids gstate \\ map snd sureList
+                         }
+                         where
+                            buls = bullets gstate
+                            astr = astroids gstate
+                            bulletHitAstroid = checkAstroidsShot' buls astr
+                            sureList = deleteMaybes bulletHitAstroid
 
-checkAstroidsShot' :: [Bullet] -> [Astroid] -> [Maybe Astroid]
+checkAstroidsShot' :: [Bullet] -> [Astroid] -> [Maybe (Bullet, Astroid)]
 checkAstroidsShot' [] [] = [Nothing]
 checkAstroidsShot' [x] a = bulletInAstroidList x a
 checkAstroidsShot' (x:xs) a = bulletInAstroidList x a ++ checkAstroidsShot' xs a
