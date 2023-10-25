@@ -1,6 +1,5 @@
 module Astroid where
 
-import Graphics.Gloss
 import Model
 import Imports
 import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath

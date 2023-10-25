@@ -2,7 +2,7 @@ module Bullet where
 
 import Model
 
-import Graphics.Gloss
+import Imports
 import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
 
 bullet :: Picture

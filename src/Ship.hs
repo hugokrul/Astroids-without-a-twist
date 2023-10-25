@@ -1,27 +1,22 @@
 module Ship where
 
-import Graphics.Gloss.Data.Vector
-import Graphics.Gloss.Geometry.Angle
 import Model
 import Imports
 import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
-import Graphics.Gloss (Vector)
-
 
 ship :: Picture
 ship = pictures
     [
         leftLine,
         rightLine,
-        middleLine, 
-        color red $ translate 17.5 (-25) $ thickCircle 2 2
+        middleLine
     ]
     -- width : 35 height: 50
     -- bottomRight = x + 17.5, y - 25
     where
         leftLine    = translate (-9)    0   $ rotate 20     $ color white $ rectangleSolid 1 50
         rightLine   = translate   9     0   $ rotate (-20)  $ color white $ rectangleSolid 1 50
-        middleLine  = translate   0  (-10)  $ rotate 90     $ color white $ rectangleSolid 1 35
+        middleLine  = translate   0  (-10)  $ rotate 90     $ color white $ rectangleSolid 1 25
 
 checkDeleteShip :: Player -> Player
 checkDeleteShip player
