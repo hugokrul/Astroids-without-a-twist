@@ -16,7 +16,7 @@ ship = pictures
     where
         leftLine    = translate (-9)    0   $ rotate 20     $ color white $ rectangleSolid 1 50
         rightLine   = translate   9     0   $ rotate (-20)  $ color white $ rectangleSolid 1 50
-        middleLine  = translate   0  (-10)  $ rotate 90     $ color white $ rectangleSolid 1 25
+        middleLine  = translate   0  (-10)  $ rotate 90     $ color white $ rectangleSolid 1 35
 
 checkDeleteShip :: Player -> Player
 checkDeleteShip player
@@ -49,11 +49,22 @@ checkCollissionShipAstroid p a =
         (x, y) = positionPlayer p
 
 pointInAstroid :: Point -> Astroid -> Bool
-pointInAstroid p0 a = pointInBox p0 p1 p2
-    where
-        p1 = (ax + 66, ay - 66)
-        p2 = (ax, ay)
-        (ax, ay) = positionAstroid a
+pointInAstroid p0 a = case sizeAstroid a of 
+    Big -> pointInBox p0 p1 p2
+        where
+            p1 = (ax - 66, ay)
+            p2 = (ax, ay - 66)
+            (ax, ay) = positionAstroid a
+    Medium -> pointInBox p0 p1 p2 
+        where
+            p1 = (ax - 33, ay)
+            p2 = (ax, ay - 33)
+            (ax, ay) = positionAstroid a
+    Small -> pointInBox p0 p1 p2 
+        where
+            p1 = (ax - 17.5, ay)
+            p2 = (ax, ay - 17.5)
+            (ax, ay) = positionAstroid a
 
 stepPlayerState :: Player -> Float -> Player
 stepPlayerState player time = player

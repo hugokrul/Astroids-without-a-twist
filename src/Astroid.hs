@@ -16,9 +16,9 @@ smallAstroid = scale 0.5 0.5 $ color white $ polygon [(17, 0), (33, -6), (32, -2
 
 showAstroid :: Astroid -> Picture
 showAstroid a = case sizeAstroid a of
-    Big -> uncurry translate (positionAstroid a) $ rotate deg bigAstroid
-    Medium -> uncurry translate (positionAstroid a) $ rotate deg mediumAstroid
-    Small -> uncurry translate (positionAstroid a)$ rotate deg smallAstroid
+    Big -> uncurry translate pos $ rotate deg bigAstroid
+    Medium -> uncurry translate pos $ rotate deg mediumAstroid
+    Small -> uncurry translate pos $ rotate deg smallAstroid
     where
         pos@(x1, y1) = positionAstroid a
         (x,y) = velocityAstroid a
@@ -55,11 +55,11 @@ bulletInAstroid :: Bullet -> Astroid -> Bool
 bulletInAstroid b a = pointInBox p0 p1 p2
     where
         p0 = positionBullet b
-        p1 = (ax + 66, ay - 66)
-        p2 = (ax, ay)
+        p1 = (ax - 66, ay)
+        p2 = (ax, ay-66)
         (ax, ay) = positionAstroid a
 
-deleteMaybes :: [Maybe (Bullet, Astroid)] -> [(Bullet, Astroid)]
+deleteMaybes :: [Maybe a] -> [a]
 deleteMaybes [] = []
 deleteMaybes [x]
     | isJust x = [fromJust x]
@@ -73,13 +73,32 @@ checkAstroidShot gstate
     | null $ bullets gstate = gstate
     | otherwise = gstate { 
                             bullets = bullets gstate \\ map fst sureList ,
-                            astroids = astroids gstate \\ map snd sureList
+                            astroids = (astroids gstate \\ map snd sureList) ++ deleteMaybes (makeAstroidsSmaller onlyAstroids)
                          }
                          where
                             buls = bullets gstate
                             astr = astroids gstate
+                            onlyAstroids = map snd sureList
                             bulletHitAstroid = checkAstroidsShot' buls astr
                             sureList = deleteMaybes bulletHitAstroid
+
+makeAstroidsSmaller :: [Astroid] -> [Maybe Astroid]
+makeAstroidsSmaller = concatMap smallerAstroid
+
+smallerAstroid :: Astroid -> [Maybe Astroid]
+smallerAstroid a = case sizeAstroid a of
+    Big -> [Just a { positionAstroid = pos1, velocityAstroid = vel, sizeAstroid = Medium }, Just a { positionAstroid = pos2, sizeAstroid = Medium } ]
+        where
+            pos1 = (-10, -10) PMath.+ positionAstroid a
+            pos2 = (10, 10) PMath.+ positionAstroid a
+            vel = (7, 7) PMath.+ velocityAstroid a
+    Medium -> [Just a { positionAstroid = pos1, velocityAstroid = vel, sizeAstroid = Small }, Just a { positionAstroid = pos2, sizeAstroid = Small } ]
+        where
+            pos1 = (-10, -10) PMath.+ positionAstroid a
+            pos2 = (10, 10) PMath.+ positionAstroid a
+            vel = (-5, 5) PMath.+ velocityAstroid a
+    _ -> [Nothing]
+
 
 checkAstroidsShot' :: [Bullet] -> [Astroid] -> [Maybe (Bullet, Astroid)]
 checkAstroidsShot' [] [] = [Nothing]
