@@ -69,14 +69,14 @@ pointInAstroid p0 a = case sizeAstroid a of
       (ax, ay) = positionAstroid a
 
 stepPlayerState :: Player -> Float -> GameState -> Player
-stepPlayerState player time gstate = player {positionPlayer = newPos, velocityPlayer = newVel, accelarationPlayer = newAcc}
+stepPlayerState player time gstate = player {positionPlayer = newPos, accelarationPlayer = newAcc}
   where
     pos = positionPlayer player
     vel@(vx, vy) = velocityPlayer player
     acc@(ax, ay) = accelarationPlayer player
-    multacc = ((vx * ax), (vy * ay))
-    newPos = pos PMath.+ multacc
-    newAcc = ((ax * 0.9), (ay * 0.9))
+
+    newAcc = ((ax * 0.99), (ay * 0.99))
+    newPos = pos PMath.+ newAcc
 
 updatePosition :: GameState -> Player -> Player
 updatePosition gstate player
@@ -96,12 +96,14 @@ rotateShip player speed = newVel
   where
     pos = positionPlayer player
     vel = velocityPlayer player
-    newVel = rotateV (-(degToRad speed)) vel
+    newVel = rotateV (-(degToRad (speed * 3))) vel -- multiplier for rotation
 
 -- This function adds the direction to the current position, moving it to the front of which the ship is looking
 moveForward :: Player -> Float -> Player
-moveForward player time = player {positionPlayer = newPos, accelarationPlayer = vel}
+moveForward player time = player {positionPlayer = newPos, accelarationPlayer = newAcc}
   where
     pos = positionPlayer player
     vel = velocityPlayer player
+    acc = accelarationPlayer player
+    newAcc | magV acc < 10 = acc PMath.+ vel | otherwise = acc -- limit acceleration
     newPos = pos PMath.+ vel
