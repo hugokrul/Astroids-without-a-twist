@@ -16,7 +16,7 @@ ship = pictures
     where
         leftLine    = translate (-9)    0   $ rotate 20     $ color white $ rectangleSolid 1 50
         rightLine   = translate   9     0   $ rotate (-20)  $ color white $ rectangleSolid 1 50
-        middleLine  = translate   0  (-10)  $ rotate 90     $ color white $ rectangleSolid 1 35
+        middleLine  = translate   0  (-10)  $ rotate 90     $ color white $ rectangleSolid 1 25
 
 checkDeleteShip :: Player -> Player
 checkDeleteShip player

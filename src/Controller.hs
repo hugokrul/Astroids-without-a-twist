@@ -42,15 +42,15 @@ input :: Event -> GameState -> IO GameState
 input e gstate = return (inputKey e gstate)
 
 inputKey :: Event -> GameState -> GameState
-inputKey (EventKey (SpecialKey KeyUp) Down _ _) gstate = gstate { player = moveForward (player gstate) (elapsedTime gstate)}
-inputKey (EventKey (SpecialKey KeyRight) Down _ _) gstate = gstate { player =  (player gstate) { velocityPlayer = rotateShip (player gstate) 10} }
-inputKey (EventKey (SpecialKey KeyLeft) Down _ _) gstate = gstate { player =  (player gstate) { velocityPlayer = rotateShip (player gstate) (-10)}  }
+inputKey (EventKey (SpecialKey KeyUp) Down _ _) gstate = if playPauseGameOver gstate == Pause then gstate else gstate { player = moveForward (player gstate) (elapsedTime gstate)}
+inputKey (EventKey (SpecialKey KeyRight) Down _ _) gstate = if playPauseGameOver gstate == Pause then gstate else gstate { player =  (player gstate) { velocityPlayer = rotateShip (player gstate) 10} }
+inputKey (EventKey (SpecialKey KeyLeft) Down _ _) gstate = if playPauseGameOver gstate == Pause then gstate else gstate { player =  (player gstate) { velocityPlayer = rotateShip (player gstate) (-10)}  }
 inputKey (EventKey (Char p) Down _ _) gstate 
     | p == 'p' = gstate { playPauseGameOver = Pause }
     | p == 'o' = gstate { playPauseGameOver = Play }
     | otherwise = gstate
 inputKey (EventKey (SpecialKey KeyEsc) Down _ _) gstate = initialState
-inputKey (EventKey (SpecialKey KeySpace) Down _ _) gstate = fireBullet gstate
+inputKey (EventKey (SpecialKey KeySpace) Down _ _) gstate = if playPauseGameOver gstate == Pause then gstate else fireBullet gstate
 inputKey _ gstate = gstate -- Otherwise keep the same
 
 fireBullet :: GameState -> GameState

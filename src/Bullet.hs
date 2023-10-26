@@ -6,7 +6,7 @@ import Imports
 import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
 
 bullet :: Picture
-bullet = color red $ ThickCircle 1 2
+bullet = color white $ ThickCircle 1 2
 
 showBullet :: Bullet -> Picture
 showBullet b = uncurry translate (positionBullet b) bullet

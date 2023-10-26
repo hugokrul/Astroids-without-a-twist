@@ -11,8 +11,10 @@ data GameState = GameState {
                     elapsedTime :: Float,
                     playPauseGameOver :: State
                   }
+                  deriving (Show)
 
 data State = Play | Pause | GameOver
+  deriving (Show, Eq)
 
 data Player   = Player    {
                            positionPlayer :: PointInSpace,
