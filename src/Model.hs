@@ -4,12 +4,15 @@ module Model where
 
 import Imports
 
+import qualified Data.Set as Set
+
 data GameState = GameState {
                     player :: Player,
                     astroids :: [Astroid],
                     bullets :: [Bullet],
                     elapsedTime :: Float,
-                    playPauseGameOver :: State
+                    playPauseGameOver :: State,
+                    keySet :: Set.Set SpecialKey
                   }
                   deriving (Show)
 
@@ -49,7 +52,7 @@ data Size = Small | Medium | Big
   deriving (Show, Eq)
 
 initialStatePlayer :: Player
-initialStatePlayer = Player {positionPlayer=(0, 0), velocityPlayer=(0, 10), accelarationPlayer=(0, 0), lives=3}
+initialStatePlayer = Player {positionPlayer=(0, 0), velocityPlayer=(0, 1), accelarationPlayer=(0, 0), lives=3}
 
 testAstroid :: Astroid
 testAstroid = Astroid {positionAstroid = (-20, 130), velocityAstroid = (10, 0), sizeAstroid = Big}
@@ -58,4 +61,4 @@ testBullet :: Bullet
 testBullet = Bullet {positionBullet = (0, 0), velocityBullet = (0, 10)}
 
 initialState :: GameState
-initialState = GameState { player=initialStatePlayer, bullets=[], astroids=[testAstroid], elapsedTime = 0, playPauseGameOver=Play}
+initialState = GameState { player=initialStatePlayer, bullets=[], astroids=[], elapsedTime = 0, playPauseGameOver=Play, keySet = Set.empty}

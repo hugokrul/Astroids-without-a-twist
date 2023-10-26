@@ -4,6 +4,8 @@ import Model
 import Imports
 import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
 
+import qualified Data.Set as Set
+
 ship :: Picture
 ship = pictures
     [
@@ -66,8 +68,21 @@ pointInAstroid p0 a = case sizeAstroid a of
             p2 = (ax+17, ay - 17)
             (ax, ay) = positionAstroid a
 
-stepPlayerState :: Player -> Float -> Player
-stepPlayerState player time = player
+stepPlayerState :: Player -> Float -> GameState -> Player
+stepPlayerState player time gstate = player
+
+updatePosition :: GameState -> Player -> Player
+updatePosition gstate player
+    | up && right   = moveForward (player {velocityPlayer = rotateShip player 1}) (elapsedTime gstate)
+    | up && left    = moveForward (player {velocityPlayer = rotateShip player (-1)}) (elapsedTime gstate)
+    | up            = moveForward player (elapsedTime gstate)
+    | right         = player { velocityPlayer = rotateShip player 1}
+    | left          = player { velocityPlayer = rotateShip player (-1)}
+    | otherwise     = player
+    where
+        up = Set.member KeyUp (keySet gstate)
+        right = Set.member KeyRight (keySet gstate)
+        left = Set.member KeyLeft (keySet gstate)
 
 rotateShip :: Player -> Float -> Vector
 rotateShip player speed = newVel
