@@ -9,7 +9,6 @@ import Model
 import Ship
 import Bullet
 import Astroid
-import GHC.Float (showFloat)
 
 view :: GameState -> IO Picture
 view = return . viewPure
