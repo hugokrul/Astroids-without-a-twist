@@ -5,6 +5,7 @@ import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
 import Graphics.Gloss.Data.Vector
 import Imports
 import Model
+import GHC.IO.Encoding (BufferCodec(getState))
 
 ship :: Picture
 ship =
@@ -30,16 +31,34 @@ checkDeleteShip player
     y = snd $ positionPlayer player
 
 checkCollission :: GameState -> GameState
-checkCollission gstate = checkCollission' (player gstate) (astroids gstate) gstate
+checkCollission gstate = checkCollissionPlanet (player gstate) (planets gstate) $ checkCollission' (player gstate) (astroids gstate) gstate
+
+checkCollissionPlanet :: Player -> [Planet] -> GameState -> GameState
+checkCollissionPlanet p [] gstate= gstate
+checkCollissionPlanet p [planet] gstate 
+  | checkCollissionShipPlanet p planet = gstate { player = initialStatePlayer { lives = lives p - 1}}
+  | otherwise = gstate
+checkCollissionPlanet p (planet:rest) gstate
+  | checkCollissionShipPlanet p planet = gstate { player = initialStatePlayer { lives = lives p - 1}}
+  | otherwise = checkCollissionPlanet p rest gstate
 
 checkCollission' :: Player -> [Astroid] -> GameState -> GameState
 checkCollission' p [] gstate = gstate
 checkCollission' p [a] gstate
-  | checkCollissionShipAstroid p a = gstate {player = p {positionPlayer = (0, 0), lives = lives p - 1}}
+  | checkCollissionShipAstroid p a = gstate { player = initialStatePlayer { lives = lives p - 1}}
   | otherwise = gstate
 checkCollission' p (a : as) gstate
-  | checkCollissionShipAstroid p a = gstate {player = p {positionPlayer = (0, 0), lives = lives p - 1}}
+  | checkCollissionShipAstroid p a = gstate { player = initialStatePlayer { lives = lives p - 1}}
   | otherwise = checkCollission' p as gstate
+
+checkCollissionShipPlanet :: Player -> Planet -> Bool
+checkCollissionShipPlanet p planet =
+  pointInPlanet (x + 17.5, y - 25) planet
+    || pointInPlanet (x - 17.5, y - 25) planet
+    || pointInPlanet (x + 17.5, y - 25) planet
+    || pointInPlanet (x + 17.5, y + 25) planet
+  where
+    (x, y) = positionPlayer p
 
 checkCollissionShipAstroid :: Player -> Astroid -> Bool
 checkCollissionShipAstroid p a =
@@ -49,6 +68,14 @@ checkCollissionShipAstroid p a =
     || pointInAstroid (x + 17.5, y + 25) a
   where
     (x, y) = positionPlayer p
+
+pointInPlanet :: Point -> Planet -> Bool
+pointInPlanet p0 planet = pointInBox p0 p1 p2
+  where
+    p1 = (planetX+50, planetY-50)
+    p2 = (planetX-50, planetY+50)
+    (planetX, planetY) = positionPlanet planet
+
 
 pointInAstroid :: Point -> Astroid -> Bool
 pointInAstroid p0 a = case sizeAstroid a of

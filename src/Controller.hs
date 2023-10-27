@@ -7,6 +7,7 @@ import View
 import Ship
 import Bullet
 import Astroid
+import Planet
 
 import Imports
 import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
@@ -17,6 +18,7 @@ step :: Float -> GameState -> IO GameState
 step secs gstate = case playPauseGameOver gstate of
     Play ->
         do
+            print $ elapsedTime gstate
             return $ checkCollission $ checkAstroidShot $ checkGameOver $ stepGameState secs gstate
     Pause -> return gstate
     GameOver -> return gstate
@@ -32,6 +34,7 @@ stepGameState time gstate = gstate
                         player = checkDeleteShip $ updatePosition gstate $ stepPlayerState (player gstate) time gstate,
                         bullets = stepBulletsState (bullets gstate) time,
                         astroids = stepAstroidsState (astroids gstate) time,
+                        planets = stepPlanetsState (planets gstate) time $ elapsedTime gstate,
                         elapsedTime = elapsedTime gstate + time
                     }
 

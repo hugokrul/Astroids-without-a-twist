@@ -9,6 +9,7 @@ data GameState = GameState
   { player :: Player,
     astroids :: [Astroid],
     bullets :: [Bullet],
+    planets :: [Planet],
     elapsedTime :: Float,
     playPauseGameOver :: State,
     keySet :: Set.Set SpecialKey
@@ -39,6 +40,13 @@ data Astroid = Astroid
   }
   deriving (Show, Eq)
 
+data Planet = Planet
+  { positionPlanet :: PointInSpace,
+    velocityPlanet :: PointInSpace,
+    lifeSpanPlanet :: Float
+  }
+  deriving (Show, Eq)
+
 type Velocity = Vector
 
 type LifeSpan = Float
@@ -53,6 +61,9 @@ data Size = Small | Medium | Big
 initialStatePlayer :: Player
 initialStatePlayer = Player {positionPlayer = (0, 0), velocityPlayer = (0, 0.15), accelarationPlayer = (0, 0), lives = 3}
 
+testPlanet :: Planet
+testPlanet = Planet { positionPlanet = (-300, -300), velocityPlanet = (50, 100), lifeSpanPlanet = 0 }
+
 testAstroid :: Astroid
 testAstroid = Astroid {positionAstroid = (-20, 130), velocityAstroid = (10, 0), sizeAstroid = Big}
 
@@ -60,4 +71,4 @@ testBullet :: Bullet
 testBullet = Bullet {positionBullet = (0, 0), velocityBullet = (0, 10)}
 
 initialState :: GameState
-initialState = GameState {player = initialStatePlayer, bullets = [], astroids = [], elapsedTime = 0, playPauseGameOver = Play, keySet = Set.empty}
+initialState = GameState {player = initialStatePlayer, bullets = [], astroids = [], planets = [testPlanet], elapsedTime = 0, playPauseGameOver = Play, keySet = Set.empty}

@@ -9,6 +9,7 @@ import Model
 import Ship
 import Bullet
 import Astroid
+import Planet
 
 view :: GameState -> IO Picture
 view = return . viewPure
@@ -32,6 +33,7 @@ getPictures :: GameState -> Picture
 getPictures gstate = pictures (
         map showBullet (bullets gstate) ++
         map showAstroid (astroids gstate) ++
+        map showPlanet (planets gstate) ++
         [uncurry translate (positionPlayer (player gstate)) $ rotate deg ship]
     )
     where
