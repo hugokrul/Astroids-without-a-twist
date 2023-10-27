@@ -31,3 +31,10 @@ calculateNextPosition bullet time = bullet {positionBullet = newPos}
         pos = positionBullet bullet
         vel = velocityBullet bullet
         newPos = pos PMath.+ (time PMath.* vel)
+
+fireBullet :: GameState -> [Bullet]
+fireBullet gstate = bullet : bullets gstate
+    where
+        bullet = Bullet position (2000 PMath.* vel)
+        position = positionPlayer $ player gstate
+        vel = velocityPlayer $ player gstate
