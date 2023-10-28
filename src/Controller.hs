@@ -22,6 +22,7 @@ step secs gstate = case playPauseGameOver gstate of
             return $ checkCollission $ checkAstroidShot $ checkGameOver $ stepGameState secs gstate
     Pause -> return gstate
     GameOver -> return gstate
+    Start -> return gstate
 
 checkGameOver :: GameState -> GameState
 checkGameOver gstate
@@ -40,10 +41,16 @@ stepGameState time gstate = gstate
 
 -- | Handle user input
 input :: Event -> GameState -> IO GameState
-input e gstate = return (inputKey e gstate)
+input e gstate = do 
+    print e 
+    return (inputKey e gstate)
 
 
 inputKey :: Event -> GameState -> GameState
+inputKey (EventKey (MouseButton LeftButton) Down _ (x, y)) gstate 
+    | x > -77 && x < 77 && y > -37 && y < 37 = gstate {playPauseGameOver=Play}
+    | otherwise = gstate
+
 inputKey (EventKey (SpecialKey KeySpace) Down _ _) gstate = if playPauseGameOver gstate == Pause then gstate else gstate { bullets = fireBullet gstate, keySet = Set.insert KeySpace (keySet gstate) }
 inputKey (EventKey (SpecialKey KeySpace) Up _ _) gstate = if playPauseGameOver gstate == Pause then gstate else gstate { keySet = Set.delete KeySpace (keySet gstate) }
 

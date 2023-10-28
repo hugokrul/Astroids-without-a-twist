@@ -26,7 +26,15 @@ viewPure gstate = case playPauseGameOver gstate of
                                 color white $ translate (-400) 150 $ scale 0.5 0.25 $ text "Paused"
                             ]
     GameOver    -> Pictures [color white $ translate (-400) 200 $ scale 0.5 0.25 $ text "Game Over",
-                             color white $ translate (-400) 150 $ scale 0.5 0.25 $ text "Press Esc to play again"]
+                             color white $ translate (-400) 150 $ scale 0.5 0.25 $ text "Press Esc to play again"
+                            ]
+    
+    Start       -> Pictures [
+                                color white $ translate (-120) 200 $ scale 0.5 0.25 $ text "Astroids",
+                                color white $ translate (-200) 150 $ scale 0.5 0.25 $ text "Witout a twist",
+                                color red   $ rectangleWire 150 70,
+                                color white $ translate (-70) (-10) $ scale 0.5 0.25 $ text "Start"
+                            ]
 
 
 getPictures :: GameState -> Picture

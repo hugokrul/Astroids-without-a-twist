@@ -16,7 +16,7 @@ data GameState = GameState
   }
   deriving (Show)
 
-data State = Play | Pause | GameOver
+data State = Play | Pause | GameOver | Start
   deriving (Show, Eq)
 
 data Player = Player
@@ -71,4 +71,4 @@ testBullet :: Bullet
 testBullet = Bullet {positionBullet = (0, 0), velocityBullet = (0, 10)}
 
 initialState :: GameState
-initialState = GameState {player = initialStatePlayer, bullets = [], astroids = [], planets = [testPlanet], elapsedTime = 0, playPauseGameOver = Play, keySet = Set.empty}
+initialState = GameState {player = initialStatePlayer, bullets = [], astroids = [], planets = [testPlanet], elapsedTime = 0, playPauseGameOver = Start, keySet = Set.empty}
