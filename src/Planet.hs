@@ -32,8 +32,8 @@ calculateNextPositionPlanet p time = checkWrapAround p { positionPlanet = newPos
 
 checkWrapAround :: Planet -> Planet
 checkWrapAround p
-    | y > 350 || y < -350 = p { positionPlanet = (-x, -y) }
     | x > 500 || x < -500 = p { positionPlanet = (-x, y) }
+    | y > 350 || y < -350 = p { positionPlanet = (x, -y) }
     | otherwise = p
     where 
         (x, y) = positionPlanet p

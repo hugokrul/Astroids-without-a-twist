@@ -24,9 +24,8 @@ ship =
 
 checkDeleteShip :: Player -> Player
 checkDeleteShip player
-  -- | (x < -420 || x > 420) && (y > 220 || y < -220) = player { positionPlayer = (-x, -y) }
   | x < -420 || x > 420 = player { positionPlayer = (-x, y) }
-  | y > 260 || y < -260 = player { positionPlayer = (-x, -y) }
+  | y > 260 || y < -260 = player { positionPlayer = (x, -y) }
   | otherwise = player
   where
     x = fst $ positionPlayer player
