@@ -56,20 +56,20 @@ bulletInAstroid b a = case sizeAstroid a of
     Big -> pointInBox p0 p1 p2
         where
             p0 = positionBullet b
-            p1 = (ax, ay)
-            p2 = (ax+66, ay-66)
+            p1 = (ax-66, ay)
+            p2 = (ax, ay-66)
             (ax, ay) = positionAstroid a
     Medium -> pointInBox p0 p1 p2
         where 
             p0 = positionBullet b
-            p1 = (ax, ay)
-            p2 = (ax+33, ay - 33)
+            p1 = (ax-33, ay)
+            p2 = (ax, ay - 33)
             (ax, ay) = positionAstroid a
     Small -> pointInBox p0 p1 p2 
         where 
             p0 = positionBullet b
-            p1 = (ax, ay)
-            p2 = (ax+17, ay - 17)
+            p1 = (ax-17, ay)
+            p2 = (ax, ay - 17)
             (ax, ay) = positionAstroid a
 
 deleteMaybes :: [Maybe a] -> [a]
