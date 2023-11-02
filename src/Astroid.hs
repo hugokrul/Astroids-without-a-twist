@@ -29,17 +29,18 @@ stepAstroidsState xs time gamestate randomVels
       (\ x -> (:) (calculateNextPositionAstroids x time))
       (if null (astroids gamestate) then
            [Astroid
-              {positionAstroid = (0, 300), velocityAstroid = (randomVels !! 0),
+              {positionAstroid = (0, 300), velocityAstroid = head randomVels,
                sizeAstroid = Big},
             Astroid
-              {positionAstroid = (0, - 300), velocityAstroid = (randomVels !! 1),
+              {positionAstroid = (0, - 300), velocityAstroid = randomVels !! 1,
                sizeAstroid = Big},
             Astroid
-              {positionAstroid = (400, 0), velocityAstroid = (randomVels !! 2),
+              {positionAstroid = (400, 0), velocityAstroid = randomVels !! 2,
                sizeAstroid = Big},
             Astroid
-              {positionAstroid = (400, 0), velocityAstroid = (randomVels !! 3),
-               sizeAstroid = Big}]
+              {positionAstroid = (400, 0), velocityAstroid = randomVels !! 3,
+               sizeAstroid = Big}
+            ]
        else
            [])
       xs
@@ -70,20 +71,20 @@ bulletInAstroid b a = case sizeAstroid a of
   Big -> pointInBox p0 p1 p2
     where
       p0 = positionBullet b
-      p1 = (ax - 66, ay)
-      p2 = (ax, ay - 66)
+      p2 = (ax, ay)
+      p1 = (ax + 66, ay - 66)
       (ax, ay) = positionAstroid a
   Medium -> pointInBox p0 p1 p2
     where
       p0 = positionBullet b
-      p1 = (ax - 33, ay)
-      p2 = (ax, ay - 33)
+      p2 = (ax, ay)
+      p1 = (ax + 33, ay - 33)
       (ax, ay) = positionAstroid a
   Small -> pointInBox p0 p1 p2
     where
       p0 = positionBullet b
-      p1 = (ax - 17, ay)
-      p2 = (ax, ay - 17)
+      p2 = (ax, ay)
+      p1 = (ax + 17, ay - 17)
       (ax, ay) = positionAstroid a
 
 deleteMaybes :: [Maybe a] -> [a]
