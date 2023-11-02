@@ -24,25 +24,32 @@ showAstroid a = case sizeAstroid a of
     deg = radToDeg (argV (y, x))
 
 stepAstroidsState :: [Astroid] -> Float -> GameState -> [Velocity] -> [Astroid]
-stepAstroidsState [] time gamestate randomVels =
-  if null (astroids gamestate)
-    then
-      [ Astroid {positionAstroid = (0, 300), velocityAstroid = (randomVels !! 0), sizeAstroid = Big},
-        Astroid {positionAstroid = (0, -300), velocityAstroid = (randomVels !! 1), sizeAstroid = Medium},
-        Astroid {positionAstroid = (400, 0), velocityAstroid = (randomVels !! 2), sizeAstroid = Medium},
-        Astroid {positionAstroid = (400, 0), velocityAstroid = (randomVels !! 3), sizeAstroid = Small}
-      ]
-    else []
-stepAstroidsState (x : xs) time gamestate randomVels
-  | checkDeleteAstroid x = stepAstroidsState xs time gamestate randomVels
-  | otherwise = calculateNextPositionAstroids x time : stepAstroidsState xs time gamestate randomVels
+stepAstroidsState xs time gamestate randomVels
+  = foldr
+      (\ x -> (:) (calculateNextPositionAstroids x time))
+      (if null (astroids gamestate) then
+           [Astroid
+              {positionAstroid = (0, 300), velocityAstroid = (randomVels !! 0),
+               sizeAstroid = Big},
+            Astroid
+              {positionAstroid = (0, - 300), velocityAstroid = (randomVels !! 1),
+               sizeAstroid = Big},
+            Astroid
+              {positionAstroid = (400, 0), velocityAstroid = (randomVels !! 2),
+               sizeAstroid = Big},
+            Astroid
+              {positionAstroid = (400, 0), velocityAstroid = (randomVels !! 3),
+               sizeAstroid = Big}]
+       else
+           [])
+      xs
 
 checkWrapAroundAstroid :: Astroid -> Astroid
 checkWrapAroundAstroid a
     | x > 500 || x < -500 = a { positionAstroid = (-x, y) }
     | y > 350 || y < -350 = a { positionAstroid = (x, -y) }
     | otherwise = a
-    where 
+    where
         (x, y) = positionAstroid a
 
 calculateNextPositionAstroids :: Astroid -> Float -> Astroid
