@@ -65,7 +65,7 @@ testPlanet :: Planet
 testPlanet = Planet { positionPlanet = (-300, -300), velocityPlanet = (50, 100), lifeSpanPlanet = 0 }
 
 testAstroid :: Astroid
-testAstroid = Astroid {positionAstroid = (-20, 130), velocityAstroid = (10, 0), sizeAstroid = Big}
+testAstroid = Astroid {positionAstroid = (-20, 130), velocityAstroid = (100, 0), sizeAstroid = Big}
 
 testBullet :: Bullet
 testBullet = Bullet {positionBullet = (0, 0), velocityBullet = (0, 10)}

@@ -26,20 +26,18 @@ showAstroid a = case sizeAstroid a of
 
 stepAstroidsState :: [Astroid] -> Float -> [Astroid]
 stepAstroidsState [] _ = []
-stepAstroidsState (x:xs) time
-    | checkDeleteAstroid x = stepAstroidsState xs time
-    | otherwise = calculateNextPositionAstroids x time : stepAstroidsState xs time
+stepAstroidsState (x:xs) time = calculateNextPositionAstroids x time : stepAstroidsState xs time
 
-checkDeleteAstroid :: Astroid -> Bool
-checkDeleteAstroid a
-    | x < -466 || x > 466 || y > 316 || y < -316 = True
-    | otherwise = False
-    where
-        x = fst $ positionAstroid a
-        y = snd $ positionAstroid a
+checkWrapAroundAstroid :: Astroid -> Astroid
+checkWrapAroundAstroid a
+    | x > 500 || x < -500 = a { positionAstroid = (-x, y) }
+    | y > 350 || y < -350 = a { positionAstroid = (x, -y) }
+    | otherwise = a
+    where 
+        (x, y) = positionAstroid a
 
 calculateNextPositionAstroids :: Astroid -> Float -> Astroid
-calculateNextPositionAstroids a time = a {positionAstroid = newPos}
+calculateNextPositionAstroids a time = checkWrapAroundAstroid a {positionAstroid = newPos}
     where
         pos = positionAstroid a
         vel = velocityAstroid a
@@ -60,13 +58,13 @@ bulletInAstroid b a = case sizeAstroid a of
             p2 = (ax, ay-66)
             (ax, ay) = positionAstroid a
     Medium -> pointInBox p0 p1 p2
-        where 
+        where
             p0 = positionBullet b
             p1 = (ax-33, ay)
             p2 = (ax, ay - 33)
             (ax, ay) = positionAstroid a
-    Small -> pointInBox p0 p1 p2 
-        where 
+    Small -> pointInBox p0 p1 p2
+        where
             p0 = positionBullet b
             p1 = (ax-17, ay)
             p2 = (ax, ay - 17)
@@ -82,9 +80,9 @@ deleteMaybes (x:xs)
     | otherwise = deleteMaybes xs
 
 checkAstroidShot :: GameState -> GameState
-checkAstroidShot gstate 
+checkAstroidShot gstate
     | null $ bullets gstate = gstate
-    | otherwise = gstate { 
+    | otherwise = gstate {
                             bullets = bullets gstate \\ map fst sureList ,
                             astroids = (astroids gstate \\ map snd sureList) ++ deleteMaybes (makeAstroidsSmaller onlyAstroids)
                          }
