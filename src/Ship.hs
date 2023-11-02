@@ -22,6 +22,13 @@ ship =
     rightLine = translate 9 0 $ rotate (-20) $ color white $ rectangleSolid 1 50
     middleLine = translate 0 (-10) $ rotate 90 $ color white $ rectangleSolid 1 25
 
+
+p1 :: PointInSpace
+p1 = (-3.44, -3.83)
+
+p2 :: PointInSpace
+p2 = (4.3, 4)
+
 checkDeleteShip :: Player -> Player
 checkDeleteShip player
   | x < -420 || x > 420 = player { positionPlayer = (-x, y) }
@@ -80,20 +87,20 @@ pointInPlanet p0 planet = pointInBox p0 p1 p2
 
 pointInAstroid :: Point -> Astroid -> Bool
 pointInAstroid p0 a = case sizeAstroid a of
-  Big -> pointInBox p0 p1 p2
+  Big -> pointInBox p0 pos1 pos2
     where
-      p1 = (ax + 66, ay - 66)
-      p2 = (ax, ay)
+      pos2 = (ax - 43.4, ay - 38.3)
+      pos1 = (ax + 43, ay + 40)
       (ax, ay) = positionAstroid a
-  Medium -> pointInBox p0 p1 p2
+  Medium -> pointInBox p0 pos1 pos2
     where
-      p1 = (ax + 33, ay - 33)
-      p2 = (ax, ay)
+      pos2 = (ax - 17.2, ay - 19.15)
+      pos1 = (ax + 21.5, ay + 20)
       (ax, ay) = positionAstroid a
-  Small -> pointInBox p0 p1 p2
+  Small -> pointInBox p0 pos1 pos2
     where
-      p1 = (ax + 17, ay - 17)
-      p2 = (ax, ay)
+      pos2 = (ax - 6.88, ay - 7.66)
+      pos1 = (ax + 8.6, ay + 8)
       (ax, ay) = positionAstroid a
 
 stepPlayerState :: Player -> Float -> GameState -> Player

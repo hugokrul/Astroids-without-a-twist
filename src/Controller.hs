@@ -17,16 +17,16 @@ step :: Float -> GameState -> IO GameState
 step secs gstate = case playPauseGameOver gstate of
   Play ->
     do
-      rVel1a <- randomRIO (-100.0, 100.0) :: IO Float
-      rVel1b <- randomRIO (-100.0, 100.0) :: IO Float
-      rVel2a <- randomRIO (-100.0, 100.0) :: IO Float
-      rVel2b <- randomRIO (-100.0, 100.0) :: IO Float
-      rVel3a <- randomRIO (-100.0, 100.0) :: IO Float
-      rVel3b <- randomRIO (-100.0, 100.0) :: IO Float
-      rVel3a <- randomRIO (-100.0, 100.0) :: IO Float
-      rVel3b <- randomRIO (-100.0, 100.0) :: IO Float
-      rVel4a <- randomRIO (-100.0, 100.0) :: IO Float
-      rVel4b <- randomRIO (-100.0, 100.0) :: IO Float
+      rVel1a <- randomRIO (-10.0, 10.0) :: IO Float
+      rVel1b <- randomRIO (-10.0, 10.0) :: IO Float
+      rVel2a <- randomRIO (-10.0, 10.0) :: IO Float
+      rVel2b <- randomRIO (-10.0, 10.0) :: IO Float
+      rVel3a <- randomRIO (-10.0, 10.0) :: IO Float
+      rVel3b <- randomRIO (-10.0, 10.0) :: IO Float
+      rVel3a <- randomRIO (-10.0, 10.0) :: IO Float
+      rVel3b <- randomRIO (-10.0, 10.0) :: IO Float
+      rVel4a <- randomRIO (-10.0, 10.0) :: IO Float
+      rVel4b <- randomRIO (-10.0, 10.0) :: IO Float
       return $ checkCollission $ checkAstroidShot $ checkGameOver $ stepGameState secs gstate [(rVel1a, rVel1b), (rVel2a, rVel2b), (rVel3a, rVel3b), (rVel4a, rVel4b)]
   Pause -> return gstate
   GameOver -> return gstate
@@ -50,7 +50,6 @@ stepGameState time gstate randomVels =
 -- | Handle user input
 input :: Event -> GameState -> IO GameState
 input e gstate = do
-  print e
   return (inputKey e gstate)
 
 inputKey :: Event -> GameState -> GameState

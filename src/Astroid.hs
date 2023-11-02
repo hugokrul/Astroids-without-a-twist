@@ -5,13 +5,22 @@ import Imports
 import Model
 
 bigAstroid :: Picture
-bigAstroid = scale 2 2 $ color white $ polygon [(17, 0), (33, -6), (32, -22), (23, -32), (12, -26), (0, -24), (2, -13), (1, -5), (7, 0)]
+bigAstroid = pictures [
+    color red $ thickCircle 2 2,
+    scale 10 10 $ color white $ polygon [(-3.44,2.84), (-1,4), (1.84,2.66), (3.14,1.16), (4.3,-0.38), (3.2,-1.5), (2.06,-2.8), (0.54,-3.78), (-2.24,-3.82), (-3.2,-1.98), (-2.62,-0.44), (-3.46,0.82)]
+    ]
+
+p1 :: PointInSpace
+p1 = (-3.44, -3.83)
+
+p2 :: PointInSpace
+p2 = (4.3, 4)
 
 mediumAstroid :: Picture
-mediumAstroid = color white $ polygon [(17, 0), (33, -6), (32, -22), (23, -32), (12, -26), (0, -24), (2, -13), (1, -5), (7, 0)]
+mediumAstroid = scale 5 5 $ color white $ polygon [(-3.44,2.84), (-1,4), (1.84,2.66), (3.14,1.16), (4.3,-0.38), (3.2,-1.5), (2.06,-2.8), (0.54,-3.78), (-2.24,-3.82), (-3.2,-1.98), (-2.62,-0.44), (-3.46,0.82)]
 
 smallAstroid :: Picture
-smallAstroid = scale 0.5 0.5 $ color white $ polygon [(17, 0), (33, -6), (32, -22), (23, -32), (12, -26), (0, -24), (2, -13), (1, -5), (7, 0)]
+smallAstroid = scale 2 2 $ color white $ polygon [(-3.44,2.84), (-1,4), (1.84,2.66), (3.14,1.16), (4.3,-0.38), (3.2,-1.5), (2.06,-2.8), (0.54,-3.78), (-2.24,-3.82), (-3.2,-1.98), (-2.62,-0.44), (-3.46,0.82)]
 
 showAstroid :: Astroid -> Picture
 showAstroid a = case sizeAstroid a of
@@ -54,11 +63,25 @@ checkWrapAroundAstroid a
         (x, y) = positionAstroid a
 
 calculateNextPositionAstroids :: Astroid -> Float -> Astroid
-calculateNextPositionAstroids a time = checkWrapAroundAstroid a {positionAstroid = newPos}
-    where
-        pos = positionAstroid a
-        vel = velocityAstroid a
-        newPos = pos PMath.+ (time PMath.* vel)
+calculateNextPositionAstroids a time = case sizeAstroid a of
+    Big -> checkWrapAroundAstroid a {positionAstroid = newPos}
+            where
+                pos = positionAstroid a
+                vel = velocityAstroid a
+                newPos = pos PMath.+ (2 PMath.* (time PMath.* vel))
+    Medium -> checkWrapAroundAstroid a {positionAstroid = newPos}
+                where
+                    pos = positionAstroid a
+                    vel = velocityAstroid a
+                    newPos = pos PMath.+ (5 PMath.* (time PMath.* vel))
+
+    Small -> checkWrapAroundAstroid a {positionAstroid = newPos}
+                where
+                    pos = positionAstroid a
+                    vel = velocityAstroid a
+                    newPos = pos PMath.+ (10 PMath.* (time PMath.* vel))
+
+
 
 bulletInAstroidList :: Bullet -> [Astroid] -> [Maybe (Bullet, Astroid)]
 bulletInAstroidList b [] = [Nothing]
@@ -68,23 +91,23 @@ bulletInAstroidList b (x : xs)
 
 bulletInAstroid :: Bullet -> Astroid -> Bool
 bulletInAstroid b a = case sizeAstroid a of
-  Big -> pointInBox p0 p1 p2
+  Big -> pointInBox p0 pos1 pos2
     where
       p0 = positionBullet b
-      p2 = (ax, ay)
-      p1 = (ax + 66, ay - 66)
+      pos2 = (ax - 43.4, ay - 38.3)
+      pos1 = (ax + 43, ay + 40)
       (ax, ay) = positionAstroid a
-  Medium -> pointInBox p0 p1 p2
+  Medium -> pointInBox p0 pos1 pos2
     where
       p0 = positionBullet b
-      p2 = (ax, ay)
-      p1 = (ax + 33, ay - 33)
+      pos2 = (ax - 17.2, ay - 19.15)
+      pos1 = (ax + 21.5, ay + 20)
       (ax, ay) = positionAstroid a
-  Small -> pointInBox p0 p1 p2
+  Small -> pointInBox p0 pos1 pos2
     where
       p0 = positionBullet b
-      p2 = (ax, ay)
-      p1 = (ax + 17, ay - 17)
+      pos2 = (ax - 6.88, ay - 7.66)
+      pos1 = (ax + 8.6, ay + 8)
       (ax, ay) = positionAstroid a
 
 deleteMaybes :: [Maybe a] -> [a]
