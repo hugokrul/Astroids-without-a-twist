@@ -5,7 +5,8 @@ module Imports (
     module Graphics.Gloss.Geometry.Angle,
     module Graphics.Gloss.Data.Point,
     module Data.Maybe,
-    module Data.List
+    module Data.List,
+    module System.Random
     ) where
 
 import Graphics.Gloss
@@ -15,6 +16,7 @@ import Graphics.Gloss.Geometry.Angle
 import Graphics.Gloss.Data.Point
 import Data.Maybe
 import Data.List
+import System.Random
 import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
 
 mapPlus :: (a -> Point) -> (a -> Point) -> a -> Point
