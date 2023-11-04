@@ -1,11 +1,11 @@
 module Ship where
 
 import qualified Data.Set as Set
+import GHC.IO.Encoding (BufferCodec (getState))
 import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
 import Graphics.Gloss.Data.Vector
 import Imports
 import Model
-import GHC.IO.Encoding (BufferCodec(getState))
 
 ship :: Picture
 ship =
@@ -22,7 +22,6 @@ ship =
     rightLine = translate 9 0 $ rotate (-20) $ color white $ rectangleSolid 1 50
     middleLine = translate 0 (-10) $ rotate 90 $ color white $ rectangleSolid 1 25
 
-
 p1 :: PointInSpace
 p1 = (-3.44, -3.83)
 
@@ -31,32 +30,34 @@ p2 = (4.3, 4)
 
 checkDeleteShip :: Player -> Player
 checkDeleteShip player
-  | x < -420 || x > 420 = player { positionPlayer = (-x, y) }
-  | y > 260 || y < -260 = player { positionPlayer = (x, -y) }
+  | x < -420 || x > 420 = player {positionPlayer = (-x, y)}
+  | y > 260 || y < -260 = player {positionPlayer = (x, -y)}
   | otherwise = player
   where
     x = fst $ positionPlayer player
     y = snd $ positionPlayer player
 
 checkCollission :: GameState -> GameState
-checkCollission gstate = checkCollissionPlanet (player gstate) (planets gstate) $ checkCollission' (player gstate) (astroids gstate) gstate
+checkCollission gstate
+  | reviving $ player gstate = gstate
+  | otherwise = checkCollissionPlanet (player gstate) (planets gstate) $ checkCollission' (player gstate) (astroids gstate) gstate
 
 checkCollissionPlanet :: Player -> [Planet] -> GameState -> GameState
-checkCollissionPlanet p [] gstate= gstate
-checkCollissionPlanet p [planet] gstate 
-  | checkCollissionShipPlanet p planet = gstate { player = initialStatePlayer { lives = lives p - 1}}
+checkCollissionPlanet p [] gstate = gstate
+checkCollissionPlanet p [planet] gstate
+  | checkCollissionShipPlanet p planet = gstate {player = initialStatePlayer {lives = lives p - 1, reviving = True}}
   | otherwise = gstate
-checkCollissionPlanet p (planet:rest) gstate
-  | checkCollissionShipPlanet p planet = gstate { player = initialStatePlayer { lives = lives p - 1}}
+checkCollissionPlanet p (planet : rest) gstate
+  | checkCollissionShipPlanet p planet = gstate {player = initialStatePlayer {lives = lives p - 1, reviving = True}}
   | otherwise = checkCollissionPlanet p rest gstate
 
 checkCollission' :: Player -> [Astroid] -> GameState -> GameState
 checkCollission' p [] gstate = gstate
 checkCollission' p [a] gstate
-  | checkCollissionShipAstroid p a = gstate { player = initialStatePlayer { lives = lives p - 1}}
+  | checkCollissionShipAstroid p a = gstate {player = initialStatePlayer {lives = lives p - 1, reviving = True}}
   | otherwise = gstate
 checkCollission' p (a : as) gstate
-  | checkCollissionShipAstroid p a = gstate { player = initialStatePlayer { lives = lives p - 1}}
+  | checkCollissionShipAstroid p a = gstate {player = initialStatePlayer {lives = lives p - 1, reviving = True}}
   | otherwise = checkCollission' p as gstate
 
 checkCollissionShipPlanet :: Player -> Planet -> Bool
@@ -80,10 +81,9 @@ checkCollissionShipAstroid p a =
 pointInPlanet :: Point -> Planet -> Bool
 pointInPlanet p0 planet = pointInBox p0 p1 p2
   where
-    p1 = (planetX+50, planetY-50)
-    p2 = (planetX-50, planetY+50)
+    p1 = (planetX + 50, planetY - 50)
+    p2 = (planetX - 50, planetY + 50)
     (planetX, planetY) = positionPlanet planet
-
 
 pointInAstroid :: Point -> Astroid -> Bool
 pointInAstroid p0 a = case sizeAstroid a of
@@ -104,14 +104,15 @@ pointInAstroid p0 a = case sizeAstroid a of
       (ax, ay) = positionAstroid a
 
 stepPlayerState :: Player -> Float -> GameState -> Player
-stepPlayerState player time gstate = player {positionPlayer = newPos, accelarationPlayer = newAcc}
+stepPlayerState player time gstate = player {positionPlayer = newPos, accelarationPlayer = newAcc, reviving = newReviving}
   where
     pos = positionPlayer player
     vel@(vx, vy) = velocityPlayer player
     acc@(ax, ay) = accelarationPlayer player
 
     newAcc = ((ax * 0.99), (ay * 0.99))
-    newPos = pos PMath.+ newAcc
+    newPos@(npx, npy) = pos PMath.+ newAcc
+    newReviving = not (reviving player && (npx > 50 || npy > 50)) && reviving player -- grace area
 
 updatePosition :: GameState -> Player -> Player
 updatePosition gstate player
