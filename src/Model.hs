@@ -64,7 +64,7 @@ initialStatePlayer :: Player
 initialStatePlayer = Player {positionPlayer = (0, 0), velocityPlayer = (0, 0.15), accelarationPlayer = (0, 0), lives = 3}
 
 testPlanet :: Planet
-testPlanet = Planet {positionPlanet = (-300, -300), velocityPlanet = (50, 100), lifeSpanPlanet = 0}
+testPlanet = Planet {positionPlanet = (-300, -350), velocityPlanet = (50, 100), lifeSpanPlanet = 0}
 
 testAstroid :: Astroid
 testAstroid = Astroid {positionAstroid = (-20, 130), velocityAstroid = (100, 0), sizeAstroid = Big}

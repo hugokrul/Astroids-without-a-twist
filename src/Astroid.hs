@@ -3,6 +3,7 @@ module Astroid where
 import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
 import Imports
 import Model
+import Hits
 
 bigAstroid :: Picture
 bigAstroid = pictures [
@@ -36,18 +37,18 @@ stepAstroidsState :: [Astroid] -> Float -> GameState -> [Velocity] -> [Astroid]
 stepAstroidsState xs time gamestate randomVels
   = foldr
       (\ x -> (:) (calculateNextPositionAstroids x time))
-      (if null (astroids gamestate) then
+      (if null (astroids gamestate) && round (elapsedTime gamestate) `mod` 100 == 0 then
            [Astroid
               {positionAstroid = (0, 300), velocityAstroid = head randomVels,
                sizeAstroid = Big},
             Astroid
-              {positionAstroid = (0, - 300), velocityAstroid = randomVels !! 1,
+              {positionAstroid = (0, -300), velocityAstroid = randomVels !! 1,
                sizeAstroid = Big},
             Astroid
               {positionAstroid = (400, 0), velocityAstroid = randomVels !! 2,
                sizeAstroid = Big},
             Astroid
-              {positionAstroid = (400, 0), velocityAstroid = randomVels !! 3,
+              {positionAstroid = (-400, 0), velocityAstroid = randomVels !! 3,
                sizeAstroid = Big}
             ]
        else
@@ -65,10 +66,10 @@ checkWrapAroundAstroid a
 calculateNextPositionAstroids :: Astroid -> Float -> Astroid
 calculateNextPositionAstroids a time = case sizeAstroid a of
     Big -> checkWrapAroundAstroid a {positionAstroid = newPos}
-            where
-                pos = positionAstroid a
-                vel = velocityAstroid a
-                newPos = pos PMath.+ (2 PMath.* (time PMath.* vel))
+                where
+                    pos = positionAstroid a
+                    vel = velocityAstroid a
+                    newPos = pos PMath.+ (2 PMath.* (time PMath.* vel))
     Medium -> checkWrapAroundAstroid a {positionAstroid = newPos}
                 where
                     pos = positionAstroid a
@@ -81,34 +82,11 @@ calculateNextPositionAstroids a time = case sizeAstroid a of
                     vel = velocityAstroid a
                     newPos = pos PMath.+ (10 PMath.* (time PMath.* vel))
 
-
-
 bulletInAstroidList :: Bullet -> [Astroid] -> [Maybe (Bullet, Astroid)]
 bulletInAstroidList b [] = [Nothing]
 bulletInAstroidList b (x : xs)
-  | bulletInAstroid b x = Just (b, x) : bulletInAstroidList b xs
+  | pointInAstroid (positionBullet b) x = Just (b, x) : bulletInAstroidList b xs
   | otherwise = bulletInAstroidList b xs
-
-bulletInAstroid :: Bullet -> Astroid -> Bool
-bulletInAstroid b a = case sizeAstroid a of
-  Big -> pointInBox p0 pos1 pos2
-    where
-      p0 = positionBullet b
-      pos2 = (ax - 43.4, ay - 38.3)
-      pos1 = (ax + 43, ay + 40)
-      (ax, ay) = positionAstroid a
-  Medium -> pointInBox p0 pos1 pos2
-    where
-      p0 = positionBullet b
-      pos2 = (ax - 17.2, ay - 19.15)
-      pos1 = (ax + 21.5, ay + 20)
-      (ax, ay) = positionAstroid a
-  Small -> pointInBox p0 pos1 pos2
-    where
-      p0 = positionBullet b
-      pos2 = (ax - 6.88, ay - 7.66)
-      pos1 = (ax + 8.6, ay + 8)
-      (ax, ay) = positionAstroid a
 
 deleteMaybes :: [Maybe a] -> [a]
 deleteMaybes [] = []

@@ -22,4 +22,6 @@ executable gloss-counter
                      , Astroid
                      , Imports
                      , Planet
+                     , Hits
+                     , Collissions
   default-language:    Haskell2010

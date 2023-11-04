@@ -17,6 +17,7 @@ step :: Float -> GameState -> IO GameState
 step secs gstate = case playPauseGameOver gstate of
   Play ->
     do
+      print (show (elapsedTime gstate) ++ "       " ++ show (planets gstate))
       rVel1a <- randomRIO (-10.0, 10.0) :: IO Float
       rVel1b <- randomRIO (-10.0, 10.0) :: IO Float
       rVel2a <- randomRIO (-10.0, 10.0) :: IO Float
@@ -43,7 +44,7 @@ stepGameState time gstate randomVels =
     { player = checkDeleteShip $ updatePosition gstate $ stepPlayerState (player gstate) time gstate,
       bullets = stepBulletsState (bullets gstate) time,
       astroids = stepAstroidsState (astroids gstate) time gstate randomVels,
-      planets = stepPlanetsState (planets gstate) time $ elapsedTime gstate,
+      planets = stepPlanetsState (planets gstate) time gstate randomVels,
       elapsedTime = elapsedTime gstate + time
     }
 
