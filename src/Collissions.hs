@@ -7,19 +7,19 @@ import Hits
 checkCollissionPlanet :: Player -> [Planet] -> GameState -> GameState
 checkCollissionPlanet p [] gstate= gstate
 checkCollissionPlanet p [planet] gstate 
-  | checkCollissionShipPlanet p planet = gstate { player = initialStatePlayer { lives = lives p - 1}}
+  | checkCollissionShipPlanet p planet = gstate { player = initialStatePlayer { lives = lives p - 1, reviving = True}}
   | otherwise = gstate
 checkCollissionPlanet p (planet:rest) gstate
-  | checkCollissionShipPlanet p planet = gstate { player = initialStatePlayer { lives = lives p - 1}}
+  | checkCollissionShipPlanet p planet = gstate { player = initialStatePlayer { lives = lives p - 1, reviving = True}}
   | otherwise = checkCollissionPlanet p rest gstate
 
 checkCollissionAstroid :: Player -> [Astroid] -> GameState -> GameState
 checkCollissionAstroid p [] gstate = gstate
 checkCollissionAstroid p [a] gstate
-  | checkCollissionShipAstroid p a = gstate { player = initialStatePlayer { lives = lives p - 1}}
+  | checkCollissionShipAstroid p a = gstate { player = initialStatePlayer { lives = lives p - 1, reviving = True}}
   | otherwise = gstate
 checkCollissionAstroid p (a : as) gstate
-  | checkCollissionShipAstroid p a = gstate { player = initialStatePlayer { lives = lives p - 1}}
+  | checkCollissionShipAstroid p a = gstate { player = initialStatePlayer { lives = lives p - 1, reviving = True}}
   | otherwise = checkCollissionAstroid p as gstate
 
 checkCollissionShipPlanet :: Player -> Planet -> Bool
