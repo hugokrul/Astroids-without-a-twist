@@ -25,7 +25,8 @@ data Player = Player
   { positionPlayer :: PointInSpace,
     velocityPlayer :: Velocity,
     accelarationPlayer :: Acceleration,
-    lives :: Float
+    lives :: Float,
+    reviving :: Bool
   }
   deriving (Show)
 
@@ -61,7 +62,7 @@ data Size = Small | Medium | Big
   deriving (Show, Eq)
 
 initialStatePlayer :: Player
-initialStatePlayer = Player {positionPlayer = (0, 0), velocityPlayer = (0, 0.15), accelarationPlayer = (0, 0), lives = 3}
+initialStatePlayer = Player {positionPlayer = (0, 0), velocityPlayer = (0, 0.15), accelarationPlayer = (0, 0), lives = 3, reviving = False}
 
 testPlanet :: Planet
 testPlanet = Planet {positionPlanet = (-300, -350), velocityPlanet = (50, 100), lifeSpanPlanet = 0}
