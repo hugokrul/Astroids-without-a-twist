@@ -12,6 +12,7 @@ data GameState = GameState
     astroids :: [Astroid],
     bullets :: [Bullet],
     planets :: [Planet],
+    enemy :: [Enemy],
     elapsedTime :: Float,
     playPauseGameOver :: State,
     keySet :: Set.Set SpecialKey
@@ -20,6 +21,15 @@ data GameState = GameState
 
 data State = Play | Pause | GameOver | Start
   deriving (Show, Eq)
+
+
+data Enemy = Enemy 
+  { positionEnemy :: PointInSpace,
+    velocityEnemy :: Velocity,
+    lifeSpanEnemy :: Float,
+    reloading :: Bool
+  }
+  deriving (Show)
 
 data Player = Player
   { positionPlayer :: PointInSpace,
@@ -32,7 +42,8 @@ data Player = Player
 
 data Bullet = Bullet
   { positionBullet :: PointInSpace,
-    velocityBullet :: Velocity
+    velocityBullet :: Velocity,
+    enemyBullet :: Bool
   }
   deriving (Show, Eq)
 
@@ -71,7 +82,10 @@ testAstroid :: Astroid
 testAstroid = Astroid {positionAstroid = (-20, 130), velocityAstroid = (100, 0), sizeAstroid = Big}
 
 testBullet :: Bullet
-testBullet = Bullet {positionBullet = (0, 0), velocityBullet = (0, 10)}
+testBullet = Bullet {positionBullet = (0, 0), velocityBullet = (0, 10), enemyBullet = False}
+
+testEnemy :: Enemy
+testEnemy = Enemy { positionEnemy = (100, 100), velocityEnemy = (0, 0), lifeSpanEnemy = 0, reloading = False}
 
 initialState :: GameState
-initialState = GameState {player = initialStatePlayer, bullets = [], astroids = [], planets = [], elapsedTime = 0, playPauseGameOver = Start, keySet = Set.empty}
+initialState = GameState {player = initialStatePlayer, bullets = [], astroids = [], planets = [], enemy = [testEnemy], elapsedTime = 0, playPauseGameOver = Pause, keySet = Set.empty}

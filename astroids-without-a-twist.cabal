@@ -24,4 +24,5 @@ executable gloss-counter
                      , Planet
                      , Hits
                      , Collissions
+                     , Enemy
   default-language:    Haskell2010

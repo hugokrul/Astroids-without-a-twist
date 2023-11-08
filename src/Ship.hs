@@ -1,15 +1,11 @@
 module Ship where
 
 import qualified Data.Set as Set
-import GHC.IO.Encoding (BufferCodec (getState))
 import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
-import Graphics.Gloss.Data.Vector
 import Imports
 import Model
 import Hits
 import Collissions
--- import Hits
-import GHC.IO.Encoding (BufferCodec(getState))
 
 ship :: Picture
 ship =
@@ -37,7 +33,17 @@ checkDeleteShip player
 checkCollission :: GameState -> GameState
 checkCollission gstate 
   | reviving $ player gstate = gstate
-  | otherwise = checkCollissionPlanet (player gstate) (planets gstate) $ checkCollissionAstroid (player gstate) (astroids gstate) gstate
+  | otherwise = checkCollissionShipEnemy (player gstate) (enemy gstate) $ checkCollissionPlanet (player gstate) (planets gstate) $ checkCollissionAstroid (player gstate) (astroids gstate) gstate
+
+checkPlayerShot :: GameState -> GameState
+checkPlayerShot gstate = gstate {player = checkPlayerShot' (bullets gstate) (player gstate)}
+
+
+checkPlayerShot' :: [Bullet] -> Player -> Player
+checkPlayerShot' [] player = player
+checkPlayerShot' (b:rest) player
+  | not (reviving player) && enemyBullet b && checkCollissionPointShip player (positionBullet b) = initialStatePlayer { lives = lives player - 1, reviving = True}
+  | otherwise = player
 
 stepPlayerState :: Player -> Float -> GameState -> Player
 stepPlayerState player time gstate = player {positionPlayer = newPos, accelarationPlayer = newAcc, reviving = newReviving}

@@ -85,7 +85,7 @@ calculateNextPositionAstroids a time = case sizeAstroid a of
 bulletInAstroidList :: Bullet -> [Astroid] -> [Maybe (Bullet, Astroid)]
 bulletInAstroidList b [] = [Nothing]
 bulletInAstroidList b (x : xs)
-  | pointInAstroid (positionBullet b) x = Just (b, x) : bulletInAstroidList b xs
+  | not (enemyBullet b) && pointInAstroid (positionBullet b) x = Just (b, x) : bulletInAstroidList b xs
   | otherwise = bulletInAstroidList b xs
 
 deleteMaybes :: [Maybe a] -> [a]

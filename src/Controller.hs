@@ -11,13 +11,13 @@ import Model
 import Planet
 import Ship
 import View
+import Enemy
 
 -- | Handle one iteration of the game
 step :: Float -> GameState -> IO GameState
 step secs gstate = case playPauseGameOver gstate of
   Play ->
     do
-      print (show (elapsedTime gstate) ++ "       " ++ show (planets gstate))
       rVel1a <- randomRIO (-10.0, 10.0) :: IO Float
       rVel1b <- randomRIO (-10.0, 10.0) :: IO Float
       rVel2a <- randomRIO (-10.0, 10.0) :: IO Float
@@ -28,7 +28,7 @@ step secs gstate = case playPauseGameOver gstate of
       rVel3b <- randomRIO (-10.0, 10.0) :: IO Float
       rVel4a <- randomRIO (-10.0, 10.0) :: IO Float
       rVel4b <- randomRIO (-10.0, 10.0) :: IO Float
-      return $ checkCollission $ checkAstroidShot $ checkGameOver $ stepGameState secs gstate [(rVel1a, rVel1b), (rVel2a, rVel2b), (rVel3a, rVel3b), (rVel4a, rVel4b)]
+      return $ shootEnemyBullet $ checkCollission $ checkAstroidShot $ checkPlayerShot $ checkGameOver $ stepGameState secs gstate [(rVel1a, rVel1b), (rVel2a, rVel2b), (rVel3a, rVel3b), (rVel4a, rVel4b)]
   Pause -> return gstate
   GameOver -> return gstate
   Start -> return gstate
@@ -45,6 +45,7 @@ stepGameState time gstate randomVels =
       bullets = stepBulletsState (bullets gstate) time,
       astroids = stepAstroidsState (astroids gstate) time gstate randomVels,
       planets = stepPlanetsState (planets gstate) time gstate randomVels,
+      enemy = stepEnemyState (enemy gstate) time gstate,
       elapsedTime = elapsedTime gstate + time
     }
 
