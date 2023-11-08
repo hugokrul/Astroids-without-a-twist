@@ -14,7 +14,7 @@ enemyPicture = pictures
 
 stepEnemyState :: [Enemy] -> Float -> GameState -> [Enemy]
 stepEnemyState [] _ gstate
-    | null (enemy gstate) && timeSpan = [testEnemy]
+    | null (enemy gstate) && timeSpan = [initialEnemy]
     | otherwise = []
     where
         elapsTime = elapsedTime gstate
