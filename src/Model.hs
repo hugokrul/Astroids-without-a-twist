@@ -15,15 +15,16 @@ data GameState = GameState
     enemy :: [Enemy],
     elapsedTime :: Float,
     playPauseGameOver :: State,
-    keySet :: Set.Set SpecialKey
+    keySet :: Set.Set SpecialKey,
+    highScore :: Float,
+    score :: Float
   }
   deriving (Show)
 
 data State = Play | Pause | GameOver | Start
   deriving (Show, Eq)
 
-
-data Enemy = Enemy 
+data Enemy = Enemy
   { positionEnemy :: PointInSpace,
     velocityEnemy :: Velocity,
     lifeSpanEnemy :: Float,
@@ -85,7 +86,7 @@ testBullet :: Bullet
 testBullet = Bullet {positionBullet = (0, 0), velocityBullet = (0, 10), enemyBullet = False}
 
 testEnemy :: Enemy
-testEnemy = Enemy { positionEnemy = (100, 100), velocityEnemy = (0, 0), lifeSpanEnemy = 0, reloading = False}
+testEnemy = Enemy {positionEnemy = (100, 100), velocityEnemy = (0, 0), lifeSpanEnemy = 0, reloading = False}
 
 initialState :: GameState
-initialState = GameState {player = initialStatePlayer, bullets = [], astroids = [], planets = [], enemy = [testEnemy], elapsedTime = 0, playPauseGameOver = Pause, keySet = Set.empty}
+initialState = GameState {player = initialStatePlayer, bullets = [], astroids = [], planets = [], enemy = [testEnemy], elapsedTime = 0, playPauseGameOver = Pause, keySet = Set.empty, highScore = 0.0, score = 0.0}

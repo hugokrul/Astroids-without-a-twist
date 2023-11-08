@@ -5,13 +5,13 @@ module Controller where
 import Astroid
 import Bullet
 import qualified Data.Set as Set
+import Enemy
 import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
 import Imports
 import Model
 import Planet
 import Ship
 import View
-import Enemy
 
 -- | Handle one iteration of the game
 step :: Float -> GameState -> IO GameState
@@ -28,10 +28,35 @@ step secs gstate = case playPauseGameOver gstate of
       rVel3b <- randomRIO (-10.0, 10.0) :: IO Float
       rVel4a <- randomRIO (-10.0, 10.0) :: IO Float
       rVel4b <- randomRIO (-10.0, 10.0) :: IO Float
-      return $ shootEnemyBullet $ checkCollission $ checkAstroidShot $ checkPlayerShot $ checkGameOver $ stepGameState secs gstate [(rVel1a, rVel1b), (rVel2a, rVel2b), (rVel3a, rVel3b), (rVel4a, rVel4b)]
+
+      scoresString <- readFile "scores.txt"
+      let scores = wordsWhen (== ',') scoresString
+      let intScores = map read scores :: [Float]
+      let newHighscore = maximum (intScores ++ [elapsedTime gstate])
+
+      return $ shootEnemyBullet $ checkCollission $ checkAstroidShot $ checkPlayerShot $ checkGameOver $ stepGameState secs gstate {highScore = newHighscore, score = elapsedTime gstate} [(rVel1a, rVel1b), (rVel2a, rVel2b), (rVel3a, rVel3b), (rVel4a, rVel4b)]
   Pause -> return gstate
-  GameOver -> return gstate
-  Start -> return gstate
+  GameOver -> do
+    scoresString <- readFile "scores.txt"
+    let scores = wordsWhen (== ',') scoresString
+    if (length scores > 0)
+      then
+        if (head scores /= show (elapsedTime gstate))
+          then writeFile "scores.txt" (show (elapsedTime gstate) ++ "," ++ scoresString)
+          else return ()
+      else writeFile "scores.txt" (show (elapsedTime gstate) ++ ",")
+    let intScores = map read scores :: [Float]
+    let newHighscore = maximum (intScores ++ [elapsedTime gstate])
+    return gstate {highScore = newHighscore}
+  Start ->
+    return gstate
+
+wordsWhen :: (Char -> Bool) -> String -> [String]
+wordsWhen p s = case dropWhile p s of
+  "" -> []
+  s' -> w : wordsWhen p s''
+    where
+      (w, s'') = break p s'
 
 checkGameOver :: GameState -> GameState
 checkGameOver gstate

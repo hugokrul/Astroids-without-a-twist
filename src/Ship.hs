@@ -1,11 +1,11 @@
 module Ship where
 
+import Collissions
 import qualified Data.Set as Set
 import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
+import Hits
 import Imports
 import Model
-import Hits
-import Collissions
 
 ship :: Picture
 ship =
@@ -31,18 +31,17 @@ checkDeleteShip player
     y = snd $ positionPlayer player
 
 checkCollission :: GameState -> GameState
-checkCollission gstate 
+checkCollission gstate
   | reviving $ player gstate = gstate
   | otherwise = checkCollissionShipEnemy (player gstate) (enemy gstate) $ checkCollissionPlanet (player gstate) (planets gstate) $ checkCollissionAstroid (player gstate) (astroids gstate) gstate
 
 checkPlayerShot :: GameState -> GameState
 checkPlayerShot gstate = gstate {player = checkPlayerShot' (bullets gstate) (player gstate)}
 
-
 checkPlayerShot' :: [Bullet] -> Player -> Player
 checkPlayerShot' [] player = player
-checkPlayerShot' (b:rest) player
-  | not (reviving player) && enemyBullet b && checkCollissionPointShip player (positionBullet b) = initialStatePlayer { lives = lives player - 1, reviving = True}
+checkPlayerShot' (b : rest) player
+  | not (reviving player) && enemyBullet b && checkCollissionPointShip player (positionBullet b) = initialStatePlayer {lives = lives player - 1, reviving = True}
   | otherwise = player
 
 stepPlayerState :: Player -> Float -> GameState -> Player
