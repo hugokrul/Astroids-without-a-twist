@@ -22,23 +22,23 @@ viewPure gstate = case playPauseGameOver gstate of
   Play ->
     pictures
       [ getPictures gstate,
-        color white $ translate (-400) 220 $ scale 0.3 0.2 $ text $ "Lives: " ++ show (lives $ player gstate),
-        color white $ translate (-200) 220 $ scale 0.2 0.15 $ text $ "Highscore: " ++ show (round' (highScore gstate) 2),
-        color white $ translate (0) 220 $ scale 0.2 0.15 $ text $ "Score: " ++ show (round' (score gstate) 2)
+        color white $ translate (-400) 220 $ scale 0.3 0.2 $ text $ "Lives:" ++ show (lives $ player gstate),
+        color white $ translate (-200) 220 $ scale 0.2 0.15 $ text $ "Highscore:" ++ show (round' (highScore gstate) 2),
+        color white $ translate (0) 220 $ scale 0.2 0.15 $ text $ "Score:" ++ show (round' (score gstate) 2)
       ]
   Pause ->
     pictures
       [ getPictures gstate,
-        color white $ translate (-400) 220 $ scale 0.3 0.2 $ text $ "Lives: " ++ show (lives $ player gstate),
-        color white $ translate (-200) 220 $ scale 0.2 0.15 $ text $ "Highscore: " ++ show (round' (highScore gstate) 2),
-        color white $ translate (0) 220 $ scale 0.2 0.15 $ text $ "Score: " ++ show (round' (score gstate) 2),
+        color white $ translate (-400) 220 $ scale 0.3 0.2 $ text $ "Lives:" ++ show (lives $ player gstate),
+        color white $ translate (-200) 220 $ scale 0.2 0.15 $ text $ "Highscore:" ++ show (round' (highScore gstate) 2),
+        color white $ translate (0) 220 $ scale 0.2 0.15 $ text $ "Score:" ++ show (round' (score gstate) 2),
         color white $ translate (-400) 150 $ scale 0.5 0.25 $ text "Paused"
       ]
   GameOver ->
     Pictures
       [ color white $ translate (-400) 200 $ scale 0.5 0.25 $ text "Game Over",
         color white $ translate (-400) 150 $ scale 0.5 0.25 $ text "Press Esc to play again",
-        color white $ translate (-150) (-50) $ scale 0.3 0.2 $ text $ "Highscore: " ++ show (highScore gstate)
+        color white $ translate (-150) (-50) $ scale 0.3 0.2 $ text $ "Highscore:" ++ show (highScore gstate)
       ]
   Start ->
     Pictures
