@@ -28,13 +28,16 @@ step secs gstate = case playPauseGameOver gstate of
       rVel3b <- randomRIO (-10.0, 10.0) :: IO Float
       rVel4a <- randomRIO (-10.0, 10.0) :: IO Float
       rVel4b <- randomRIO (-10.0, 10.0) :: IO Float
+      rPos1a <- randomRIO (-500, 500) :: IO Float
+      rPos1b <- randomRIO (-500, 500) :: IO Float
 
       scoresString <- readFile "scores.txt"
       let scores = wordsWhen (== ',') scoresString
       let intScores = map read scores :: [Float]
       let newHighscore = maximum (intScores ++ [elapsedTime gstate])
 
-      return $ shootEnemyBullet $ checkCollission $ checkAstroidShot $ checkPlayerShot $ checkGameOver $ stepGameState secs gstate {highScore = newHighscore, score = elapsedTime gstate} [(rVel1a, rVel1b), (rVel2a, rVel2b), (rVel3a, rVel3b), (rVel4a, rVel4b)]
+      return $ shootEnemyBullet $ checkCollission $ checkAstroidShot $ checkPlayerShot $ checkGameOver $ stepGameState secs gstate {highScore = newHighscore, score = elapsedTime gstate} [(rVel1a, rVel1b), (rVel2a, rVel2b), (rVel3a, rVel3b), (rVel4a, rVel4b), (rPos1a, rPos1b)]
+
   Pause -> return gstate
   GameOver -> do
     scoresString <- readFile "scores.txt"
@@ -70,7 +73,7 @@ stepGameState time gstate randomVels =
       bullets = stepBulletsState (bullets gstate) time,
       astroids = stepAstroidsState (astroids gstate) time gstate randomVels,
       planets = stepPlanetsState (planets gstate) time gstate randomVels,
-      enemy = stepEnemyState (enemy gstate) time gstate,
+      enemy = stepEnemyState (enemy gstate) time gstate (randomVels !! 4),
       elapsedTime = elapsedTime gstate + time
     }
 

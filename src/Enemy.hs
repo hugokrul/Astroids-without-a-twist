@@ -13,14 +13,14 @@ enemyPicture = pictures
         translate 0 10 $ color white $ scale 1 1.5 $ circleSolid 15
     ]
 
-stepEnemyState :: [Enemy] -> Float -> GameState -> [Enemy]
-stepEnemyState [] _ gstate
-    | null (enemy gstate) && timeSpan = [initialEnemy]
+stepEnemyState :: [Enemy] -> Float -> GameState -> Velocity -> [Enemy]
+stepEnemyState [] _ gstate v
+    | null (enemy gstate) && timeSpan = [initialEnemy {positionEnemy = v}]
     | otherwise = []
     where
         elapsTime = elapsedTime gstate
         timeSpan = round elapsTime `mod` 100 == 0 && round elapsTime > 1
-stepEnemyState (enemy:_) time gstate
+stepEnemyState (enemy:_) time gstate _
     | odd (round (elapsedTime gstate)) = [enemy {positionEnemy = newPos, velocityEnemy = newVel, reloading = False} | not (enemyShot enemy gstate)]
     | otherwise = [enemy {positionEnemy = newPos, velocityEnemy = newVel} | not (enemyShot enemy gstate)]
     where
