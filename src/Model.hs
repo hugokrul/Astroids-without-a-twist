@@ -92,4 +92,4 @@ initialEnemy :: Enemy
 initialEnemy = Enemy {positionEnemy = (100, 100), velocityEnemy = (0, 0), lifeSpanEnemy = 0, reloading = False}
 
 initialState :: GameState
-initialState = GameState {player = initialStatePlayer, bullets = [], astroids = [], planets = [], enemy = [], elapsedTime = 0, playPauseGameOver = Pause, keySet = Set.empty, highScore = 0.0, score = 0.0}
+initialState = GameState {player = initialStatePlayer, bullets = [], astroids = [], planets = [], enemy = [], elapsedTime = 0, playPauseGameOver = Start, keySet = Set.empty, highScore = 0.0, score = 0.0}
