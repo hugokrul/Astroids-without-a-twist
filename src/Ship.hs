@@ -7,8 +7,8 @@ import Hits
 import Imports
 import Model
 
-ship :: Picture
-ship =
+ship :: Float -> Picture
+ship animationStep =
   pictures
     [ leftLine,
       rightLine,
@@ -17,9 +17,9 @@ ship =
   where
     -- width : 35 height: 50
     -- bottomRight = x + 17.5, y - 25
-    leftLine = translate (-9) 0 $ rotate 20 $ color white $ rectangleSolid 1 50
-    rightLine = translate 9 0 $ rotate (-20) $ color white $ rectangleSolid 1 50
-    middleLine = translate 0 (-10) $ rotate 90 $ color white $ rectangleSolid 1 25
+    leftLine = translate (-9) 0 $ rotate (20 - 50 * animationStep) $ color white $ rectangleSolid 1 50
+    rightLine = translate 9 0 $ rotate ((-20) + 70 * animationStep) $ color white $ rectangleSolid 1 50
+    middleLine = translate 0 (-10) $ rotate (90 - 90 * animationStep) $ color white $ rectangleSolid 1 25
 
 checkDeleteShip :: Player -> Player
 checkDeleteShip player
@@ -36,13 +36,13 @@ checkCollission gstate
   | otherwise = checkCollissionShipEnemy (player gstate) (enemy gstate) $ checkCollissionPlanet (player gstate) (planets gstate) $ checkCollissionAstroid (player gstate) (astroids gstate) gstate
 
 checkPlayerShot :: GameState -> GameState
-checkPlayerShot gstate = gstate {player = checkPlayerShot' (bullets gstate) (player gstate)}
+checkPlayerShot gstate = checkPlayerShot' (bullets gstate) (player gstate) gstate
 
-checkPlayerShot' :: [Bullet] -> Player -> Player
-checkPlayerShot' [] player = player
-checkPlayerShot' (b : rest) player
-  | not (reviving player) && enemyBullet b && checkCollissionPointShip player (positionBullet b) = initialStatePlayer {lives = lives player - 1, reviving = True}
-  | otherwise = player
+checkPlayerShot' :: [Bullet] -> Player -> GameState -> GameState
+checkPlayerShot' [] player gstate = gstate
+checkPlayerShot' (b : rest) player gstate
+  | not (reviving player) && enemyBullet b && checkCollissionPointShip player (positionBullet b) = gstate {player = initialStatePlayer {lives = lives player - 1, reviving = True, deathAnimationTime = (elapsedTime gstate + 3.0), deathPosition = positionPlayer (player), deathVelocity = velocityPlayer player}}
+  | otherwise = gstate
 
 stepPlayerState :: Player -> Float -> GameState -> Player
 stepPlayerState player time gstate = player {positionPlayer = newPos, accelarationPlayer = newAcc, reviving = newReviving}

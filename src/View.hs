@@ -54,14 +54,24 @@ getPictures gstate =
     ( map showBullet (bullets gstate)
         ++ map showAstroid (astroids gstate)
         ++ map showPlanet (planets gstate)
-        ++ [uncurry translate (positionPlayer (player gstate)) $ rotate deg ship]
+        ++ [uncurry translate (positionPlayer (player gstate)) $ rotate deg (ship 0)]
+        ++ ( if (timeDiff > 0)
+               then ([uncurry translate (deathPosition (player gstate)) $ rotate degdeath shipDeathPicture])
+               else []
+           )
         ++ ([uncurry translate (positionEnemy (head (enemy gstate))) enemyPicture | not (null (enemy gstate))])
     )
   where
     (x, y) = velocityPlayer (player gstate)
     deg = radToDeg (argV (y, x))
+    (xd, yd) = deathVelocity (player gstate)
+    degdeath = radToDeg (argV (yd, xd))
     (enemyX, enemyY) = velocityEnemy (head (enemy gstate))
     degE = radToDeg (argV (enemyY, enemyX))
+
+    timeDiff = max (deathAnimationTime (player gstate) - elapsedTime gstate) 0
+    animationStep = if (timeDiff > 0) then (3.0 - timeDiff) / 3.0 else 0 -- 2.0 = animationTime
+    shipDeathPicture = ship animationStep
 
 getTime :: GameState -> Float
 getTime = elapsedTime
