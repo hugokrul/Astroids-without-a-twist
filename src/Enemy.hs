@@ -3,6 +3,7 @@ module Enemy where
 import Model
 import Imports
 import Collissions
+import Hits
 import qualified Graphics.Gloss.Data.Point.Arithmetic as PMath
 
 
