@@ -1,6 +1,6 @@
 name:                astroids-without-a-twist
 version:             0.1.0.0
-author:              Hugo Krul
+author:              Hugo Krul & Koen Vermeulen
 maintainer:          hugo.krul@gmail.com
 category:            Game
 build-type:          Simple
