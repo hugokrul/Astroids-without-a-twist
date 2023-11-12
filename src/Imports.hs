@@ -1,3 +1,4 @@
+-- Exports all the modules needed.
 module Imports
   ( module Graphics.Gloss,
     module Graphics.Gloss.Interface.IO.Game,
@@ -19,6 +20,3 @@ import Graphics.Gloss.Data.Vector
 import Graphics.Gloss.Geometry.Angle
 import Graphics.Gloss.Interface.IO.Game
 import System.Random
-
-mapPlus :: (a -> Point) -> (a -> Point) -> a -> Point
-mapPlus f1 f2 s = f1 s PMath.+ f2 s

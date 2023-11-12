@@ -3,8 +3,6 @@
 module Model where
 
 import qualified Data.Set as Set
--- be careful!
-
 import Imports
 
 data GameState = GameState
@@ -21,8 +19,6 @@ data GameState = GameState
   }
   deriving (Show)
 
-data State = Play | Pause | GameOver | Start
-  deriving (Show, Eq)
 
 data Enemy = Enemy
   { positionEnemy :: PointInSpace,
@@ -65,31 +61,26 @@ data Planet = Planet
   }
   deriving (Show, Eq)
 
-type Velocity = Vector
+data Size         = Small | Medium | Big
+  deriving (Show, Eq)
 
-type LifeSpan = Float
+data State        = Play  | Pause  | GameOver | Start
+  deriving (Show, Eq)
+
+type Velocity     = Vector
+
+type LifeSpan     = Float
 
 type Acceleration = Vector
 
 type PointInSpace = Point
 
-data Size = Small | Medium | Big
-  deriving (Show, Eq)
 
-initialStatePlayer :: Player
-initialStatePlayer = Player {positionPlayer = (0, 0), velocityPlayer = (0, 0.15), accelarationPlayer = (0, 0), lives = 3, reviving = False, deathAnimationTime = 0.0, deathPosition = (2000, 2000), deathVelocity = (0, 0)}
+initialPlayer :: Player
+initialPlayer = Player {positionPlayer = (0, 0), velocityPlayer = (0, 0.15), accelarationPlayer = (0, 0), lives = 3, reviving = False, deathAnimationTime = 0.0, deathPosition = (2000, 2000), deathVelocity = (0, 0)}
 
-testPlanet :: Planet
-testPlanet = Planet {positionPlanet = (-300, -350), velocityPlanet = (50, 100), lifeSpanPlanet = 0}
+initialEnemy       :: Enemy
+initialEnemy       = Enemy {positionEnemy = (100, 100), velocityEnemy = (0, 0), lifeSpanEnemy = 0, reloading = False}
 
-testAstroid :: Astroid
-testAstroid = Astroid {positionAstroid = (-20, 130), velocityAstroid = (100, 0), sizeAstroid = Big}
-
-testBullet :: Bullet
-testBullet = Bullet {positionBullet = (0, 0), velocityBullet = (0, 10), enemyBullet = False}
-
-initialEnemy :: Enemy
-initialEnemy = Enemy {positionEnemy = (100, 100), velocityEnemy = (0, 0), lifeSpanEnemy = 0, reloading = False}
-
-initialState :: GameState
-initialState = GameState {player = initialStatePlayer, bullets = [], astroids = [], planets = [], enemy = [], elapsedTime = 0, playPauseGameOver = Start, keySet = Set.empty, highScore = 0.0, score = 0.0}
+initialState       :: GameState
+initialState       = GameState {player = initialPlayer, bullets = [], astroids = [], planets = [], enemy = [], elapsedTime = 0, playPauseGameOver = Start, keySet = Set.empty, highScore = 0.0, score = 0.0}
