@@ -59,13 +59,3 @@ checkCollissionPointShip player p0 = pointInBox p0 p1 p2
     p1 = (x + 17.5, y + 17.5)
     p2 = (x - 17.5, y - 17.5)
     pos@(x, y) = positionPlayer player
-
-pointInShip :: Enemy -> Point -> Bool
-pointInShip enemy p0 =
-  pointInBox p0 p1 p2 || pointInBox p0 p3 p4
-  where
-    (x, y) = positionEnemy enemy
-    p1 = (x + 40, y + 15)
-    p2 = (x - 40, y - 15)
-    p3 = (x + 15, y + 35)
-    p4 = (x - 15, y + 10)
